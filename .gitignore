@@ -4,3 +4,4 @@ clicks.db
 .DS_Store
 *.swp
 dist/
+build/
