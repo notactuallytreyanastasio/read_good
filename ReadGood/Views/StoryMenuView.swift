@@ -151,7 +151,7 @@ struct StoryMenuView: View {
             .padding(.vertical, 4)
             .background(Color(NSColor.windowBackgroundColor))
         }
-        .frame(width: 320, height: 500)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         // TODO: Add TagSelectionView to Xcode project
         /* 
         .sheet(isPresented: $storyManager.showingTagSelection) {
