@@ -2,8 +2,7 @@
 
 A native macOS rewrite of BOBrowser, providing a clean menu bar interface for aggregating and reading stories from Hacker News, Reddit, and Pinboard.
 
-
-![Screenshot 2025-06-04 at 3 02 17 PM](https://github.com/user-attachments/assets/61ef931c-3689-4d05-9e0b-daece3741b26)
+![Screenshot 2025-06-04 at 4 24 19 PM](https://github.com/user-attachments/assets/0a9956c4-ce92-43d8-9d42-c34a698b0c8d)
 
 > **Status**: ✅ **First working build complete!** The app now compiles and runs successfully as a native macOS menu bar application.
 
