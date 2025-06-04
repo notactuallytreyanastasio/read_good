@@ -241,13 +241,13 @@ class StoryManager: ObservableObject {
             .store(in: &cancellables)
     }
     
-    // Search functions
-    func searchStories(query: String) -> [Story] {
-        return dataController.searchStories(query: query)
+    // Search functions - now async to avoid blocking UI
+    func searchStories(query: String) async -> [Story] {
+        return await dataController.searchStories(query: query)
     }
     
-    func searchStoriesByTags(_ tags: [String]) -> [Story] {
-        return dataController.searchStoriesByTags(tags)
+    func searchStoriesByTags(_ tags: [String]) async -> [Story] {
+        return await dataController.searchStoriesByTags(tags)
     }
     
     @Published var searchResults: [StoryData] = []
@@ -268,7 +268,7 @@ class StoryManager: ObservableObject {
                     .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                     .filter { !$0.isEmpty }
                 
-                let coreDataStories = searchStoriesByTags(tags)
+                let coreDataStories = await searchStoriesByTags(tags)
                 let storyData = coreDataStories.compactMap { story in
                     StoryData(
                         id: story.id,
@@ -290,7 +290,7 @@ class StoryManager: ObservableObject {
                 }
             } else {
                 // Regular title search
-                let coreDataStories = searchStories(query: query)
+                let coreDataStories = await searchStories(query: query)
                 let storyData = coreDataStories.compactMap { story in
                     StoryData(
                         id: story.id,

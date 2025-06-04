@@ -62,9 +62,13 @@ class StatusBarController: ObservableObject {
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
             isMenuVisible = true
             
-            // Refresh stories when menu opens
+            // Only refresh if we have no stories or it's been a while
             Task {
-                storyManager.refreshAllStories()
+                if storyManager.stories.isEmpty || 
+                   storyManager.lastRefresh == nil || 
+                   Date().timeIntervalSince(storyManager.lastRefresh!) > 300 { // 5 minutes
+                    storyManager.refreshAllStories()
+                }
             }
         }
     }

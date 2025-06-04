@@ -74,39 +74,49 @@ class DataController: ObservableObject {
         }
     }
     
-    // Search functionality
-    func searchStories(query: String) -> [Story] {
-        let request: NSFetchRequest<Story> = Story.fetchRequest()
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.lastSeenAt, ascending: false)]
-        
-        do {
-            return try container.viewContext.fetch(request)
-        } catch {
-            print("Search failed: \(error.localizedDescription)")
-            return []
+    // Search functionality - async to avoid blocking main thread
+    func searchStories(query: String) async -> [Story] {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Story> = Story.fetchRequest()
+                request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
+                request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.lastSeenAt, ascending: false)]
+                
+                do {
+                    let results = try context.fetch(request)
+                    continuation.resume(returning: results)
+                } catch {
+                    print("Search failed: \(error.localizedDescription)")
+                    continuation.resume(returning: [])
+                }
+            }
         }
     }
     
-    // Tag search
-    func searchStoriesByTags(_ tagNames: [String]) -> [Story] {
-        let request: NSFetchRequest<Story> = Story.fetchRequest()
-        
-        // Create predicates for each tag
-        let tagPredicates = tagNames.map { tagName in
-            NSPredicate(format: "ANY tags.name == %@", tagName.lowercased())
-        }
-        
-        // Combine with OR logic
-        let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: tagPredicates)
-        request.predicate = compoundPredicate
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.lastSeenAt, ascending: false)]
-        
-        do {
-            return try container.viewContext.fetch(request)
-        } catch {
-            print("Tag search failed: \(error.localizedDescription)")
-            return []
+    // Tag search - async to avoid blocking main thread
+    func searchStoriesByTags(_ tagNames: [String]) async -> [Story] {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Story> = Story.fetchRequest()
+                
+                // Create predicates for each tag
+                let tagPredicates = tagNames.map { tagName in
+                    NSPredicate(format: "ANY tags.name == %@", tagName.lowercased())
+                }
+                
+                // Combine with OR logic
+                let compoundPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: tagPredicates)
+                request.predicate = compoundPredicate
+                request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.lastSeenAt, ascending: false)]
+                
+                do {
+                    let results = try context.fetch(request)
+                    continuation.resume(returning: results)
+                } catch {
+                    print("Tag search failed: \(error.localizedDescription)")
+                    continuation.resume(returning: [])
+                }
+            }
         }
     }
 }
