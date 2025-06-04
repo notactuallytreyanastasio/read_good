@@ -1,0 +1,189 @@
+import Foundation
+import Combine
+
+@MainActor
+class StoryManager: ObservableObject {
+    static let shared = StoryManager()
+    
+    @Published var stories: [StoryData] = []
+    @Published var isLoading = false
+    @Published var lastRefresh: Date?
+    
+    private let dataController = DataController()
+    private let hackernewsAPI = HackerNewsAPI()
+    private let redditAPI = RedditAPI()
+    private let pinboardAPI = PinboardAPI()
+    private let archiveService = ArchiveService()
+    private let claudeService = ClaudeService()
+    
+    private var cancellables = Set<AnyCancellable>()
+    private let refreshInterval: TimeInterval = 300 // 5 minutes
+    
+    private init() {
+        setupPeriodicRefresh()
+    }
+    
+    func refreshAllStories() {
+        guard !isLoading else { return }
+        
+        isLoading = true
+        
+        Task {
+            do {
+                async let hnStories = hackernewsAPI.fetchTopStories()
+                async let redditStories = redditAPI.fetchStories()
+                async let pinboardStories = pinboardAPI.fetchPopularStories()
+                
+                let allStories = try await hnStories + redditStories + pinboardStories
+                
+                // Update UI
+                self.stories = allStories
+                self.lastRefresh = Date()
+                
+                // Save to Core Data in background
+                dataController.batchSaveStories(allStories)
+                
+                print("Refreshed \(allStories.count) stories from all sources")
+                
+            } catch {
+                print("Failed to refresh stories: \(error)")
+            }
+            
+            isLoading = false
+        }
+    }
+    
+    func handleStoryClick(_ story: StoryData, clickType: ClickType) {
+        Task {
+            // Track click in database
+            await trackClick(story: story, type: clickType)
+            
+            // Generate archive URLs
+            let archiveURL = archiveService.generateArchiveURL(for: story.url ?? "")
+            
+            // Open URLs based on click type and story source
+            switch clickType {
+            case .article:
+                await openStoryURLs(story: story, archiveURL: archiveURL)
+                
+                // Auto-generate tags
+                if let url = story.url {
+                    await generateAndApplyTags(story: story, url: url)
+                }
+                
+            case .comments:
+                if let commentsURL = story.commentsURL {
+                    await openURL(commentsURL)
+                }
+                
+            case .archive:
+                await openURL(archiveURL)
+            }
+        }
+    }
+    
+    private func openStoryURLs(story: StoryData, archiveURL: String) async {
+        switch story.source {
+        case .hackernews:
+            // HN: Archive + Discussion + Article
+            await openURL(archiveURL)
+            
+            if let commentsURL = story.commentsURL {
+                try? await Task.sleep(nanoseconds: 200_000_000) // 0.2s delay
+                await openURL(commentsURL)
+            }
+            
+            if let articleURL = story.url {
+                try? await Task.sleep(nanoseconds: 600_000_000) // 0.6s delay
+                await openURL(articleURL)
+            }
+            
+        case .reddit:
+            // Reddit: Archive + Reddit Discussion + Actual Article
+            await openURL(archiveURL)
+            
+            try? await Task.sleep(nanoseconds: 200_000_000)
+            await openURL(story.commentsURL ?? story.url ?? "")
+            
+            if let actualURL = story.actualURL, actualURL != story.url {
+                try? await Task.sleep(nanoseconds: 600_000_000)
+                await openURL(actualURL)
+            }
+            
+        case .pinboard:
+            // Pinboard: Archive + Article
+            await openURL(archiveURL)
+            
+            if let articleURL = story.url {
+                try? await Task.sleep(nanoseconds: 400_000_000) // 0.4s delay
+                await openURL(articleURL)
+            }
+        }
+    }
+    
+    private func openURL(_ urlString: String) async {
+        guard let url = URL(string: urlString) else { return }
+        
+        await MainActor.run {
+            NSWorkspace.shared.open(url)
+        }
+    }
+    
+    private func trackClick(story: StoryData, type: ClickType) async {
+        dataController.performBackgroundTask { context in
+            let managedStory = Story.findOrCreate(from: story, in: context)
+            managedStory.isViewed = true
+            managedStory.viewedAt = Date()
+            managedStory.engagementCount += 1
+            
+            _ = Click.create(type: type, for: managedStory, in: context)
+            
+            do {
+                try context.save()
+            } catch {
+                print("Failed to track click: \(error)")
+            }
+        }
+    }
+    
+    private func generateAndApplyTags(story: StoryData, url: String) async {
+        do {
+            let tags = try await claudeService.generateTags(title: story.title, url: url)
+            
+            dataController.performBackgroundTask { context in
+                let managedStory = Story.findOrCreate(from: story, in: context)
+                
+                tags.forEach { tagName in
+                    _ = Tag.findOrCreate(name: tagName, for: managedStory, in: context)
+                }
+                
+                do {
+                    try context.save()
+                    print("Applied \(tags.count) AI tags to story: \(story.title)")
+                } catch {
+                    print("Failed to save tags: \(error)")
+                }
+            }
+        } catch {
+            print("Failed to generate tags: \(error)")
+        }
+    }
+    
+    private func setupPeriodicRefresh() {
+        Timer.publish(every: refreshInterval, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.refreshAllStories()
+            }
+            .store(in: &cancellables)
+    }
+    
+    // Search functions
+    func searchStories(query: String) -> [Story] {
+        return dataController.searchStories(query: query)
+    }
+    
+    func searchStoriesByTags(_ tags: [String]) -> [Story] {
+        return dataController.searchStoriesByTags(tags)
+    }
+}
