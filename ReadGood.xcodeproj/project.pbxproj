@@ -21,17 +21,10 @@
 		04A1F1BD2C8E4A9B00123456 /* ClaudeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A1F1BC2C8E4A9B00123456 /* ClaudeService.swift */; };
 		04A1F1BF2C8E4A9B00123456 /* ArchiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A1F1BE2C8E4A9B00123456 /* ArchiveService.swift */; };
 		04A1F1C12C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04A1F1C02C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld */; };
+		742648562DF0CBEE00663A5C /* RedditCredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742648532DF0CBEE00663A5C /* RedditCredentialsView.swift */; };
+		742648572DF0CBEE00663A5C /* TagSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742648542DF0CBEE00663A5C /* TagSelectionView.swift */; };
+		742648582DF0CBEE00663A5C /* CredentialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742648512DF0CBEE00663A5C /* CredentialManager.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		04A1F1A02C8E4A9B00123456 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXFileReference section */
 		04A1F1A32C8E4A9B00123456 /* ReadGood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadGood.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,11 +41,23 @@
 		04A1F1BA2C8E4A9B00123456 /* PinboardAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinboardAPI.swift; sourceTree = "<group>"; };
 		04A1F1BC2C8E4A9B00123456 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
 		04A1F1BE2C8E4A9B00123456 /* ArchiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveService.swift; sourceTree = "<group>"; };
-		04A1F1C02C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ReadGoodModel.xcdatamodeld"; sourceTree = "<group>"; };
-		04A1F1D02C8E4A9B00123456 /* ReadGoodModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ReadGoodModel.xcdatamodel; sourceTree = "<group>"; };
 		04A1F1C22C8E4A9B00123456 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04A1F1C32C8E4A9B00123456 /* ReadGood.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReadGood.entitlements; sourceTree = "<group>"; };
+		04A1F1D02C8E4A9B00123456 /* ReadGoodModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ReadGoodModel.xcdatamodel; sourceTree = "<group>"; };
+		742648512DF0CBEE00663A5C /* CredentialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialManager.swift; sourceTree = "<group>"; };
+		742648532DF0CBEE00663A5C /* RedditCredentialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditCredentialsView.swift; sourceTree = "<group>"; };
+		742648542DF0CBEE00663A5C /* TagSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04A1F1A02C8E4A9B00123456 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		04A1F19A2C8E4A9B00123456 = {
@@ -91,6 +96,8 @@
 			children = (
 				04A1F1AA2C8E4A9B00123456 /* StoryMenuView.swift */,
 				04A1F1AC2C8E4A9B00123456 /* SettingsView.swift */,
+				742648532DF0CBEE00663A5C /* RedditCredentialsView.swift */,
+				742648542DF0CBEE00663A5C /* TagSelectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -119,6 +126,7 @@
 				04A1F1B42C8E4A9B00123456 /* StoryManager.swift */,
 				04A1F1BC2C8E4A9B00123456 /* ClaudeService.swift */,
 				04A1F1BE2C8E4A9B00123456 /* ArchiveService.swift */,
+				742648512DF0CBEE00663A5C /* CredentialManager.swift */,
 				04A1F1C82C8E4A9B00123456 /* API */,
 			);
 			path = Services;
@@ -209,6 +217,9 @@
 				04A1F1AF2C8E4A9B00123456 /* Story.swift in Sources */,
 				04A1F1B12C8E4A9B00123456 /* Tag.swift in Sources */,
 				04A1F1B32C8E4A9B00123456 /* DataController.swift in Sources */,
+				742648562DF0CBEE00663A5C /* RedditCredentialsView.swift in Sources */,
+				742648572DF0CBEE00663A5C /* TagSelectionView.swift in Sources */,
+				742648582DF0CBEE00663A5C /* CredentialManager.swift in Sources */,
 				04A1F1B52C8E4A9B00123456 /* StoryManager.swift in Sources */,
 				04A1F1B72C8E4A9B00123456 /* HackerNewsAPI.swift in Sources */,
 				04A1F1B92C8E4A9B00123456 /* RedditAPI.swift in Sources */,
@@ -437,7 +448,6 @@
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
-
 	};
 	rootObject = 04A1F19B2C8E4A9B00123456 /* Project object */;
 }

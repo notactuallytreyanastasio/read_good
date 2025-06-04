@@ -85,7 +85,6 @@ struct RedditCredentialsView: View {
             }
             .frame(minWidth: 400, minHeight: 300)
             .navigationTitle("Reddit Setup")
-            .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(isPresented: $showingHelp) {
             RedditSetupHelpView()
@@ -190,9 +189,8 @@ struct RedditSetupHelpView: View {
                 .padding()
             }
             .navigationTitle("Reddit Setup Help")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
                         dismiss()
                     }

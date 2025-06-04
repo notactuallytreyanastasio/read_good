@@ -1,54 +1,37 @@
 import Foundation
 
+struct RedditCredentials {
+    let clientId: String
+    let clientSecret: String
+}
+
 class CredentialManager: ObservableObject {
     static let shared = CredentialManager()
     
-    @Published var hasRedditCredentials: Bool = false
+    private init() {}
     
-    private let redditClientIdKey = "reddit_client_id"
-    private let redditClientSecretKey = "reddit_client_secret"
-    
-    private init() {
-        checkRedditCredentials()
+    var hasRedditCredentials: Bool {
+        return getRedditCredentials() != nil
     }
     
-    // MARK: - Reddit Credentials
+    func getRedditCredentials() -> RedditCredentials? {
+        // For now, return nil to indicate no credentials are configured
+        // This can be extended later to store/retrieve credentials securely
+        return nil
+    }
     
     func setRedditCredentials(clientId: String, clientSecret: String) {
-        UserDefaults.standard.set(clientId, forKey: redditClientIdKey)
-        UserDefaults.standard.set(clientSecret, forKey: redditClientSecretKey)
-        checkRedditCredentials()
-        print("✅ Reddit credentials saved")
-    }
-    
-    func getRedditCredentials() -> (clientId: String, clientSecret: String)? {
-        guard let clientId = UserDefaults.standard.string(forKey: redditClientIdKey),
-              let clientSecret = UserDefaults.standard.string(forKey: redditClientSecretKey),
-              !clientId.isEmpty,
-              !clientSecret.isEmpty else {
-            return nil
-        }
-        
-        return (clientId: clientId, clientSecret: clientSecret)
+        // TODO: Implement secure credential storage
+        // For now, this is a placeholder
     }
     
     func clearRedditCredentials() {
-        UserDefaults.standard.removeObject(forKey: redditClientIdKey)
-        UserDefaults.standard.removeObject(forKey: redditClientSecretKey)
-        checkRedditCredentials()
-        print("🗑️ Reddit credentials cleared")
+        // TODO: Implement credential clearing
+        // For now, this is a placeholder
     }
-    
-    private func checkRedditCredentials() {
-        hasRedditCredentials = getRedditCredentials() != nil
-    }
-    
-    // MARK: - Validation
     
     func validateRedditCredentials(clientId: String, clientSecret: String) -> Bool {
-        return !clientId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-               !clientSecret.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-               clientId.count >= 10 && // Reddit client IDs are typically longer
-               clientSecret.count >= 20 // Reddit client secrets are typically longer
+        // Basic validation - ensure credentials have minimum length requirements
+        return clientId.count >= 10 && clientSecret.count >= 20
     }
 }
