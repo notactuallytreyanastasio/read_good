@@ -2,6 +2,8 @@
 
 A native macOS rewrite of BOBrowser, providing a clean menu bar interface for aggregating and reading stories from Hacker News, Reddit, and Pinboard.
 
+> **Status**: ✅ **First working build complete!** The app now compiles and runs successfully as a native macOS menu bar application.
+
 ## Features
 
 ### 📰 Multi-Source Aggregation
@@ -44,8 +46,8 @@ Single click on any story automatically:
 ## Installation
 
 ### Prerequisites
-- macOS 12.0 or later
-- Xcode 14+ (for building from source)
+- macOS 13.0 or later
+- Xcode 15+ (for building from source)
 - Claude CLI (for AI tagging) - [Download here](https://www.anthropic.com/claude-code)
 
 ### Building from Source
@@ -57,8 +59,32 @@ cd read_good
 # Open in Xcode
 open ReadGood.xcodeproj
 
+# Set your development team in Xcode:
+# 1. Select ReadGood project in sidebar
+# 2. Go to Signing & Capabilities tab
+# 3. Choose your Apple ID from Team dropdown
+
 # Build and run (⌘+R)
 ```
+
+### Quick Start
+```bash
+# 1. Build and run in Xcode (⌘+R)
+# 2. Look for document icon in menu bar
+# 3. Click icon to see story popover
+# 4. Click any story to read!
+```
+
+### First Run
+When you first run the app:
+1. **Menu bar icon** appears (document icon in top-right menu bar)
+2. **Click the icon** to see the story aggregator popover  
+3. **Stories load automatically** from Hacker News and Pinboard (Reddit requires setup)
+4. **Click any story** to automatically:
+   - Archive the content via archive.ph
+   - Open discussion/comments page
+   - Open the original article
+   - Generate AI tags (if Claude CLI available)
 
 ### Environment Setup
 
@@ -69,6 +95,34 @@ export REDDIT_CLIENT_SECRET="your_client_secret"
 ```
 
 Or configure via the Settings window after first launch.
+
+## Current Implementation Status
+
+### ✅ What's Working
+- **Menu bar integration**: Native NSStatusItem with document icon
+- **Story aggregation**: Successfully fetches from all three sources
+  - Hacker News: Top stories via Firebase API
+  - Reddit: Configurable subreddits via OAuth (requires API credentials)
+  - Pinboard: Popular bookmarks via web scraping
+- **Story display**: Clean SwiftUI popover with source indicators (🟠 📌 👽)
+- **Link opening**: One-click opens archive + comments + article in sequence
+- **Core Data**: Full database tracking of stories, clicks, and engagement
+- **Archive integration**: Automatic archive.ph submission and access
+- **Claude CLI integration**: AI tagging when Claude is available in PATH
+- **Settings interface**: Configuration for Reddit credentials and preferences
+
+### 🚧 Known Issues
+- **Reddit authentication**: Requires manual API credential setup
+- **Claude dependency**: Falls back gracefully when Claude CLI unavailable
+- **Story filtering**: Database browser filters (Gems, Recent, etc.) need Core Data integration
+- **Notification system**: Permission requested but not yet implemented
+
+### 🔄 Next Steps
+- Implement Core Data fetching for filtered views
+- Add notification system for interesting stories
+- Enhanced tag management interface
+- Export/import functionality for story database
+- App Store distribution preparation
 
 ## Architecture
 
@@ -186,3 +240,40 @@ ReadGood/
 ## Support
 
 For issues or feature requests, please use the GitHub issue tracker.
+
+## Development Notes
+
+### Project Structure Overview
+```
+ReadGood/
+├── ReadGoodApp.swift           # App entry point & delegate
+├── StatusBarController.swift   # Menu bar management
+├── Views/                     # SwiftUI interface
+│   ├── StoryMenuView.swift    # Main popover
+│   └── SettingsView.swift     # Configuration
+├── Models/                    # Core Data entities
+│   ├── Story.swift           # Story data model
+│   └── Tag.swift             # Tag/Click models
+├── Services/                  # Business logic
+│   ├── StoryManager.swift    # Central coordinator
+│   ├── ClaudeService.swift   # AI tagging
+│   ├── ArchiveService.swift  # Archive.ph integration
+│   └── API/                  # External APIs
+└── Core Data/                 # Database
+    ├── DataController.swift  # Core Data stack
+    └── ReadGoodModel.xcdatamodeld
+```
+
+### Building & Testing
+- **Minimum target**: macOS 13.0, Swift 5.9+
+- **Dependencies**: No external Swift packages (uses system frameworks)
+- **Testing**: Run in Xcode with ⌘+R, check Console.app for debug logs
+- **Debugging**: All network requests and Core Data operations logged
+
+### Code Architecture
+- **@MainActor**: UI classes marked for main thread execution
+- **async/await**: Modern Swift concurrency throughout
+- **Core Data**: Thread-safe background operations
+- **SwiftUI + AppKit**: Hybrid approach for menu bar integration
+
+This implementation provides a solid foundation for a production macOS news aggregator with native performance and proper system integration.
