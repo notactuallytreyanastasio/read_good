@@ -82,7 +82,7 @@ class RedditAPI {
         let clientSecret = credentials.clientSecret
         
         let credentialString = "\(clientId):\(clientSecret)"
-        let credentialsData = credentialString.data(using: .utf8)!
+        let credentialsData = credentialString.data(using: String.Encoding.utf8)!
         let base64Credentials = credentialsData.base64EncodedString()
         
         var request = URLRequest(url: URL(string: authURL)!)
