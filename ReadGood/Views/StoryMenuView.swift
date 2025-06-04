@@ -73,6 +73,22 @@ struct StoryMenuView: View {
                 LazyVStack(spacing: 0) {
                     if storyManager.isLoading {
                         LoadingView()
+                    } else if filteredStories.isEmpty {
+                        VStack(spacing: 8) {
+                            Text("No stories available")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            Text("Total stories: \(storyManager.stories.count)")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            
+                            Button("Refresh") {
+                                storyManager.refreshAllStories()
+                            }
+                            .font(.caption)
+                        }
+                        .padding()
                     } else {
                         ForEach(filteredStories) { story in
                             StoryRowView(story: story)
@@ -115,26 +131,32 @@ struct StoryMenuView: View {
     
     private var filteredStories: [StoryData] {
         let stories = storyManager.stories
+        print("📱 UI: Raw stories count: \(stories.count)")
         
         // Apply search filter
         let searchFiltered = searchText.isEmpty ? stories : stories.filter { story in
             story.title.localizedCaseInsensitiveContains(searchText)
         }
+        print("📱 UI: After search filter: \(searchFiltered.count)")
         
         // Apply type filter (would need Core Data integration for unread/gems/recent)
+        let result: [StoryData]
         switch selectedFilter {
         case .all:
-            return searchFiltered
+            result = searchFiltered
         case .unread:
             // Would filter by unread stories from Core Data
-            return searchFiltered
+            result = searchFiltered
         case .gems:
             // Would filter by low-appearance stories from Core Data
-            return searchFiltered.filter { $0.points < 50 }
+            result = searchFiltered.filter { $0.points < 50 }
         case .recent:
             // Would filter by recently clicked stories from Core Data
-            return searchFiltered
+            result = searchFiltered
         }
+        
+        print("📱 UI: Final filtered stories: \(result.count)")
+        return result
     }
 }
 

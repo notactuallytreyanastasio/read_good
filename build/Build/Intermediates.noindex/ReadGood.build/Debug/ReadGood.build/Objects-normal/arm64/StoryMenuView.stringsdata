@@ -1,0 +1,112 @@
+{
+  "source": "/Users/robertgrayson/playground/read_good/ReadGood/Views/StoryMenuView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Search stories or tags...",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "Filter",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "ReadGood",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "No stories available",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "Total stories: %lld",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "Refresh",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 86
+        }
+      },
+      {
+        "comment": "",
+        "key": "Updated %@ ago",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quit",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "by %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 184
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "Loading stories...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 226
+        }
+      }
+    ]
+  },
+  "version": 1
+}

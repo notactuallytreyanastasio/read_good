@@ -32,32 +32,63 @@ class StoryManager: ObservableObject {
     }
     
     func refreshAllStories() {
-        guard !isLoading else { return }
+        guard !isLoading else { 
+            print("⚠️ Refresh already in progress, skipping")
+            return 
+        }
         
+        print("🔄 Starting story refresh...")
         isLoading = true
         
         Task {
             do {
-                async let hnStories = hackernewsAPI.fetchTopStories()
-                async let redditStories = redditAPI.fetchStories()
-                async let pinboardStories = pinboardAPI.fetchPopularStories()
+                print("📡 Fetching stories from all sources...")
                 
-                let allStories = try await hnStories + redditStories + pinboardStories
+                // Start with just Hacker News for testing
+                let hnStories = try await hackernewsAPI.fetchTopStories()
+                print("✅ Fetched \(hnStories.count) HN stories")
                 
-                // Update UI
-                self.stories = allStories
-                self.lastRefresh = Date()
+                // Try other sources but don't fail if they error
+                var redditStories: [StoryData] = []
+                var pinboardStories: [StoryData] = []
+                
+                do {
+                    redditStories = try await redditAPI.fetchStories()
+                    print("✅ Fetched \(redditStories.count) Reddit stories")
+                } catch {
+                    print("⚠️ Reddit fetch failed (expected if no credentials): \(error)")
+                }
+                
+                do {
+                    pinboardStories = try await pinboardAPI.fetchPopularStories()
+                    print("✅ Fetched \(pinboardStories.count) Pinboard stories")
+                } catch {
+                    print("⚠️ Pinboard fetch failed: \(error)")
+                }
+                
+                let allStories = hnStories + redditStories + pinboardStories
+                
+                // Update UI on main thread
+                await MainActor.run {
+                    self.stories = allStories
+                    self.lastRefresh = Date()
+                    print("🎉 Updated UI with \(allStories.count) total stories")
+                }
                 
                 // Save to Core Data in background
                 dataController.batchSaveStories(allStories)
                 
-                print("Refreshed \(allStories.count) stories from all sources")
-                
             } catch {
-                print("Failed to refresh stories: \(error)")
+                print("❌ Failed to refresh stories: \(error)")
+                await MainActor.run {
+                    self.isLoading = false
+                }
+                return
             }
             
-            isLoading = false
+            await MainActor.run {
+                self.isLoading = false
+            }
         }
     }
     

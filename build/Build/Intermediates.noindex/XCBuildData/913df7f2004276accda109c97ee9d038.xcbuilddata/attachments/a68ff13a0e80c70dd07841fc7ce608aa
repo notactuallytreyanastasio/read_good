@@ -1,0 +1,138 @@
+{
+  "" : {
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGood-master.dia",
+    "emit-module-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGood-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGood-master-emit-module.dia",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGood-master.swiftdeps"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Core Data/DataController.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/DataController~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Models/Story.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Story~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Models/Tag.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/Tag~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/ReadGoodApp.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ReadGoodApp~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Services/API/HackerNewsAPI.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/HackerNewsAPI~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Services/API/PinboardAPI.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/PinboardAPI~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Services/API/RedditAPI.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/RedditAPI~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Services/ArchiveService.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ArchiveService~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Services/ClaudeService.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/ClaudeService~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Services/StoryManager.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryManager~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/StatusBarController.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StatusBarController~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Views/SettingsView.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/SettingsView~partial.swiftmodule"
+  },
+  "/Users/robertgrayson/playground/read_good/ReadGood/Views/StoryMenuView.swift" : {
+    "const-values" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.swiftconstvalues",
+    "dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.d",
+    "diagnostics" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.dia",
+    "index-unit-output-path" : "/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.o",
+    "llvm-bc" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.bc",
+    "object" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.o",
+    "swift-dependencies" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView.swiftdeps",
+    "swiftmodule" : "/Users/robertgrayson/playground/read_good/build/Build/Intermediates.noindex/ReadGood.build/Debug/ReadGood.build/Objects-normal/arm64/StoryMenuView~partial.swiftmodule"
+  }
+}

@@ -18,8 +18,13 @@ class StatusBarController: ObservableObject {
         setupStatusItem()
         setupPopover()
         
-        // Start periodic refresh
+        // Start periodic refresh and do initial load
         storyManager.startPeriodicRefresh()
+        
+        // Initial story load
+        Task {
+            storyManager.refreshAllStories()
+        }
     }
     
     private func setupStatusItem() {

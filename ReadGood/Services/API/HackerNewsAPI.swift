@@ -16,10 +16,14 @@ class HackerNewsAPI {
     }
     
     func fetchTopStories() async throws -> [StoryData] {
+        print("🟠 HN: Fetching top story IDs...")
+        
         // Get top story IDs
         let topStoriesURL = URL(string: "\(baseURL)/topstories.json")!
         let (data, _) = try await session.data(from: topStoriesURL)
         let storyIDs = try JSONDecoder().decode([Int].self, from: data)
+        
+        print("🟠 HN: Got \(storyIDs.count) story IDs, fetching details for first 15...")
         
         // Fetch details for first 15 stories
         let limitedIDs = Array(storyIDs.prefix(15))
@@ -40,7 +44,9 @@ class HackerNewsAPI {
             return results
         }
         
-        return stories.sorted { $0.points > $1.points }
+        let sortedStories = stories.sorted { $0.points > $1.points }
+        print("🟠 HN: Successfully fetched \(sortedStories.count) stories")
+        return sortedStories
     }
     
     private func fetchStoryDetails(id: Int) async throws -> StoryData? {
