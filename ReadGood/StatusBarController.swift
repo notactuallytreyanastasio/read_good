@@ -1,10 +1,12 @@
 import SwiftUI
 import AppKit
 
+@MainActor
 class StatusBarController: ObservableObject {
     private var statusBar: NSStatusBar
     private var statusItem: NSStatusItem
     private var popover: NSPopover
+    private let storyManager = StoryManager()
     
     @Published var isMenuVisible = false
     
@@ -15,6 +17,9 @@ class StatusBarController: ObservableObject {
         
         setupStatusItem()
         setupPopover()
+        
+        // Start periodic refresh
+        storyManager.startPeriodicRefresh()
     }
     
     private func setupStatusItem() {
@@ -35,7 +40,7 @@ class StatusBarController: ObservableObject {
         popover.behavior = .transient
         popover.contentViewController = NSHostingController(
             rootView: StoryMenuView()
-                .environmentObject(StoryManager.shared)
+                .environmentObject(storyManager)
         )
     }
     
@@ -53,7 +58,9 @@ class StatusBarController: ObservableObject {
             isMenuVisible = true
             
             // Refresh stories when menu opens
-            StoryManager.shared.refreshAllStories()
+            Task {
+                storyManager.refreshAllStories()
+            }
         }
     }
     

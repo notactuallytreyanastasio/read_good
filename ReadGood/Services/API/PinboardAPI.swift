@@ -36,8 +36,8 @@ class PinboardAPI {
             let range = NSRange(html.startIndex..., in: html)
             let matches = regex.matches(in: html, options: [], range: range)
             
-            for (index, match) in matches.enumerated() {
-                guard index < 12 else { break } // Limit to 12 stories
+            for (_, match) in matches.enumerated() {
+                guard stories.count < 12 else { break } // Limit to 12 stories
                 
                 let urlRange = Range(match.range(at: 1), in: html)!
                 let titleRange = Range(match.range(at: 2), in: html)!
@@ -49,7 +49,7 @@ class PinboardAPI {
                 let points = Int(countString) ?? 0
                 
                 let story = StoryData(
-                    id: "pinboard_\(index)",
+                    id: "pinboard_\(stories.count)",
                     title: title,
                     url: url,
                     commentsURL: nil,
@@ -77,7 +77,7 @@ class PinboardAPI {
         let lines = html.components(separatedBy: .newlines)
         var stories: [StoryData] = []
         
-        for (index, line) in lines.enumerated() {
+        for (_, line) in lines.enumerated() {
             if line.contains("bookmark_title") && line.contains("href=") {
                 // Extract URL and title using simple string operations
                 if let urlStart = line.range(of: "href=\""),

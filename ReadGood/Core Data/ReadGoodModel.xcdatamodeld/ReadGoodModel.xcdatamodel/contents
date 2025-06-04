@@ -4,7 +4,7 @@
         <attribute name="clickType" attributeType="String"/>
         <attribute name="clickedAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="story" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="clicks" inverseEntity="Story"/>
+        <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="clicks" inverseEntity="Story"/>
     </entity>
     <entity name="Story" representedClassName="Story" syncable="YES">
         <attribute name="archiveURL" optional="YES" attributeType="String"/>
@@ -35,12 +35,6 @@
     <entity name="Tag" representedClassName="Tag" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
-        <relationship name="story" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="tags" inverseEntity="Story"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="name"/>
-                <constraint value="story"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
+        <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="tags" inverseEntity="Story"/>
     </entity>
 </model>

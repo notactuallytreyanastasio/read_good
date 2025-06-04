@@ -1,6 +1,6 @@
 import Foundation
 
-class ClaudeService {
+class ClaudeService: @unchecked Sendable {
     private let session = URLSession.shared
     
     func generateTags(title: String, url: String) async throws -> [String] {
@@ -78,7 +78,7 @@ class ClaudeService {
                 // Wait for completion with timeout
                 DispatchQueue.global().async {
                     let timeout = DispatchTime.now() + .seconds(15)
-                    let result = process.waitUntilExit()
+                    process.waitUntilExit()
                     
                     if DispatchTime.now() < timeout {
                         if process.terminationStatus == 0 {

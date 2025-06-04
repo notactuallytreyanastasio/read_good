@@ -211,5 +211,5 @@ struct LoadingView: View {
 
 #Preview {
     StoryMenuView()
-        .environmentObject(StoryManager.shared)
+        .environmentObject(StoryManager())
 }

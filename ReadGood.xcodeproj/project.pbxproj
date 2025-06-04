@@ -23,6 +23,16 @@
 		04A1F1C12C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04A1F1C02C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		04A1F1A02C8E4A9B00123456 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXFileReference section */
 		04A1F1A32C8E4A9B00123456 /* ReadGood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReadGood.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04A1F1A62C8E4A9B00123456 /* ReadGoodApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadGoodApp.swift; sourceTree = "<group>"; };
@@ -38,8 +48,10 @@
 		04A1F1BA2C8E4A9B00123456 /* PinboardAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinboardAPI.swift; sourceTree = "<group>"; };
 		04A1F1BC2C8E4A9B00123456 /* ClaudeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeService.swift; sourceTree = "<group>"; };
 		04A1F1BE2C8E4A9B00123456 /* ArchiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveService.swift; sourceTree = "<group>"; };
-		04A1F1C02C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ReadGoodModel.xcdatamodeld; sourceTree = "<group>"; };
+		04A1F1C02C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ReadGoodModel.xcdatamodeld"; sourceTree = "<group>"; };
+		04A1F1D02C8E4A9B00123456 /* ReadGoodModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ReadGoodModel.xcdatamodel; sourceTree = "<group>"; };
 		04A1F1C22C8E4A9B00123456 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04A1F1C32C8E4A9B00123456 /* ReadGood.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReadGood.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -64,16 +76,17 @@
 			children = (
 				04A1F1A62C8E4A9B00123456 /* ReadGoodApp.swift */,
 				04A1F1A82C8E4A9B00123456 /* StatusBarController.swift */,
-				04A1F1C32C8E4A9B00123456 /* Views */,
-				04A1F1C42C8E4A9B00123456 /* Models */,
-				04A1F1C52C8E4A9B00123456 /* Core Data */,
-				04A1F1C62C8E4A9B00123456 /* Services */,
+				04A1F1C42C8E4A9B00123456 /* Views */,
+				04A1F1C52C8E4A9B00123456 /* Models */,
+				04A1F1C62C8E4A9B00123456 /* Core Data */,
+				04A1F1C72C8E4A9B00123456 /* Services */,
 				04A1F1C22C8E4A9B00123456 /* Info.plist */,
+				04A1F1C32C8E4A9B00123456 /* ReadGood.entitlements */,
 			);
 			path = ReadGood;
 			sourceTree = "<group>";
 		};
-		04A1F1C32C8E4A9B00123456 /* Views */ = {
+		04A1F1C42C8E4A9B00123456 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				04A1F1AA2C8E4A9B00123456 /* StoryMenuView.swift */,
@@ -82,7 +95,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		04A1F1C42C8E4A9B00123456 /* Models */ = {
+		04A1F1C52C8E4A9B00123456 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				04A1F1AE2C8E4A9B00123456 /* Story.swift */,
@@ -91,7 +104,7 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		04A1F1C52C8E4A9B00123456 /* Core Data */ = {
+		04A1F1C62C8E4A9B00123456 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
 				04A1F1B22C8E4A9B00123456 /* DataController.swift */,
@@ -100,18 +113,18 @@
 			path = "Core Data";
 			sourceTree = "<group>";
 		};
-		04A1F1C62C8E4A9B00123456 /* Services */ = {
+		04A1F1C72C8E4A9B00123456 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				04A1F1B42C8E4A9B00123456 /* StoryManager.swift */,
 				04A1F1BC2C8E4A9B00123456 /* ClaudeService.swift */,
 				04A1F1BE2C8E4A9B00123456 /* ArchiveService.swift */,
-				04A1F1C72C8E4A9B00123456 /* API */,
+				04A1F1C82C8E4A9B00123456 /* API */,
 			);
 			path = Services;
 			sourceTree = "<group>";
 		};
-		04A1F1C72C8E4A9B00123456 /* API */ = {
+		04A1F1C82C8E4A9B00123456 /* API */ = {
 			isa = PBXGroup;
 			children = (
 				04A1F1B62C8E4A9B00123456 /* HackerNewsAPI.swift */,
@@ -126,9 +139,11 @@
 /* Begin PBXNativeTarget section */
 		04A1F1A22C8E4A9B00123456 /* ReadGood */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 04A1F1C82C8E4A9B00123456 /* Build configuration list for PBXNativeTarget "ReadGood" */;
+			buildConfigurationList = 04A1F1C92C8E4A9B00123456 /* Build configuration list for PBXNativeTarget "ReadGood" */;
 			buildPhases = (
 				04A1F19F2C8E4A9B00123456 /* Sources */,
+				04A1F1A02C8E4A9B00123456 /* Frameworks */,
+				04A1F1A12C8E4A9B00123456 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -172,6 +187,16 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		04A1F1A12C8E4A9B00123456 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		04A1F19F2C8E4A9B00123456 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -197,7 +222,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		04A1F1C92C8E4A9B00123456 /* Debug */ = {
+		04A1F1CA2C8E4A9B00123456 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -250,7 +275,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -260,7 +285,7 @@
 			};
 			name = Debug;
 		};
-		04A1F1CA2C8E4A9B00123456 /* Release */ = {
+		04A1F1CB2C8E4A9B00123456 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -307,7 +332,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -315,7 +340,7 @@
 			};
 			name = Release;
 		};
-		04A1F1CB2C8E4A9B00123456 /* Debug */ = {
+		04A1F1CC2C8E4A9B00123456 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -327,7 +352,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ReadGood/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ReadGood;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
@@ -337,7 +362,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.readgood.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -346,7 +371,7 @@
 			};
 			name = Debug;
 		};
-		04A1F1CC2C8E4A9B00123456 /* Release */ = {
+		04A1F1CD2C8E4A9B00123456 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -358,7 +383,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ReadGood/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ReadGood;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.news";
@@ -368,7 +393,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.readgood.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -383,17 +408,17 @@
 		04A1F19E2C8E4A9B00123456 /* Build configuration list for PBXProject "ReadGood" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				04A1F1C92C8E4A9B00123456 /* Debug */,
-				04A1F1CA2C8E4A9B00123456 /* Release */,
+				04A1F1CA2C8E4A9B00123456 /* Debug */,
+				04A1F1CB2C8E4A9B00123456 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04A1F1C82C8E4A9B00123456 /* Build configuration list for PBXNativeTarget "ReadGood" */ = {
+		04A1F1C92C8E4A9B00123456 /* Build configuration list for PBXNativeTarget "ReadGood" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				04A1F1CB2C8E4A9B00123456 /* Debug */,
-				04A1F1CC2C8E4A9B00123456 /* Release */,
+				04A1F1CC2C8E4A9B00123456 /* Debug */,
+				04A1F1CD2C8E4A9B00123456 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -404,13 +429,15 @@
 		04A1F1C02C8E4A9B00123456 /* ReadGoodModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				04A1F1D02C8E4A9B00123456 /* ReadGoodModel.xcdatamodel */,
 			);
-			currentVersion = 04A1F1C12C8E4A9B00123456 /* ReadGoodModel.xcdatamodel */;
+			currentVersion = 04A1F1D02C8E4A9B00123456 /* ReadGoodModel.xcdatamodel */;
 			path = ReadGoodModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
+
 	};
 	rootObject = 04A1F19B2C8E4A9B00123456 /* Project object */;
 }

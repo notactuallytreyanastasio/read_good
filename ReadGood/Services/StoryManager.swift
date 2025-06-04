@@ -1,9 +1,11 @@
 import Foundation
 import Combine
 
+import AppKit
+
 @MainActor
 class StoryManager: ObservableObject {
-    static let shared = StoryManager()
+    nonisolated static let shared = StoryManager()
     
     @Published var stories: [StoryData] = []
     @Published var isLoading = false
@@ -19,8 +21,14 @@ class StoryManager: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let refreshInterval: TimeInterval = 300 // 5 minutes
     
-    private init() {
-        setupPeriodicRefresh()
+    nonisolated init() {
+        // setupPeriodicRefresh() will be called after @MainActor properties are set
+    }
+    
+    nonisolated func startPeriodicRefresh() {
+        Task { @MainActor in
+            setupPeriodicRefresh()
+        }
     }
     
     func refreshAllStories() {
@@ -125,7 +133,7 @@ class StoryManager: ObservableObject {
         guard let url = URL(string: urlString) else { return }
         
         await MainActor.run {
-            NSWorkspace.shared.open(url)
+            _ = NSWorkspace.shared.open(url)
         }
     }
     
