@@ -8,6 +8,10 @@ struct RedditCredentials {
 class CredentialManager: ObservableObject {
     static let shared = CredentialManager()
     
+    private let userDefaults = UserDefaults.standard
+    private let redditClientIdKey = "RedditClientId"
+    private let redditClientSecretKey = "RedditClientSecret"
+    
     private init() {}
     
     var hasRedditCredentials: Bool {
@@ -15,19 +19,26 @@ class CredentialManager: ObservableObject {
     }
     
     func getRedditCredentials() -> RedditCredentials? {
-        // For now, return nil to indicate no credentials are configured
-        // This can be extended later to store/retrieve credentials securely
-        return nil
+        guard let clientId = userDefaults.string(forKey: redditClientIdKey),
+              let clientSecret = userDefaults.string(forKey: redditClientSecretKey),
+              !clientId.isEmpty,
+              !clientSecret.isEmpty else {
+            return nil
+        }
+        
+        return RedditCredentials(clientId: clientId, clientSecret: clientSecret)
     }
     
     func setRedditCredentials(clientId: String, clientSecret: String) {
-        // TODO: Implement secure credential storage
-        // For now, this is a placeholder
+        userDefaults.set(clientId, forKey: redditClientIdKey)
+        userDefaults.set(clientSecret, forKey: redditClientSecretKey)
+        objectWillChange.send()
     }
     
     func clearRedditCredentials() {
-        // TODO: Implement credential clearing
-        // For now, this is a placeholder
+        userDefaults.removeObject(forKey: redditClientIdKey)
+        userDefaults.removeObject(forKey: redditClientSecretKey)
+        objectWillChange.send()
     }
     
     func validateRedditCredentials(clientId: String, clientSecret: String) -> Bool {

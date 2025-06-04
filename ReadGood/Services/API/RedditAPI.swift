@@ -81,6 +81,8 @@ class RedditAPI {
         let clientId = credentials.clientId
         let clientSecret = credentials.clientSecret
         
+        print("Attempting Reddit authentication with Client ID: \(clientId.prefix(5))...")
+        
         let credentialString = "\(clientId):\(clientSecret)"
         let credentialsData = credentialString.data(using: String.Encoding.utf8)!
         let base64Credentials = credentialsData.base64EncodedString()
@@ -92,11 +94,21 @@ class RedditAPI {
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.httpBody = "grant_type=client_credentials".data(using: .utf8)
         
+        print("Making Reddit auth request to: \(authURL)")
+        
         let (data, response) = try await session.data(for: request)
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200 else {
-            throw APIError.authenticationFailed("Reddit authentication failed")
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.authenticationFailed("Invalid response from Reddit API")
+        }
+        
+        if httpResponse.statusCode != 200 {
+            if let errorData = String(data: data, encoding: .utf8) {
+                print("Reddit API Error Response: \(errorData)")
+                throw APIError.authenticationFailed("Reddit authentication failed (HTTP \(httpResponse.statusCode)): \(errorData)")
+            } else {
+                throw APIError.authenticationFailed("Reddit authentication failed with HTTP status \(httpResponse.statusCode)")
+            }
         }
         
         let tokenResponse = try JSONDecoder().decode(TokenResponse.self, from: data)

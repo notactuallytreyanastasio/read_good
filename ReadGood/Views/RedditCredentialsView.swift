@@ -11,81 +11,96 @@ struct RedditCredentialsView: View {
     @State private var showingHelp = false
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                // Header
-                VStack(spacing: 8) {
+        VStack(spacing: 0) {
+            // Compact header
+            VStack(spacing: 6) {
+                HStack {
                     Image(systemName: "globe")
-                        .font(.system(size: 48))
+                        .font(.system(size: 12))
                         .foregroundColor(.orange)
                     
-                    Text("Activate Reddit Integration")
-                        .font(.title2)
-                        .fontWeight(.semibold)
+                    Text("Reddit Setup")
+                        .font(.system(size: 11, weight: .medium))
                     
-                    Text("Enter your Reddit API credentials to fetch stories from Reddit")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
+                    Spacer()
+                    
+                    Button(action: { showingHelp = true }) {
+                        Image(systemName: "questionmark.circle")
+                            .font(.system(size: 10))
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .padding(.top)
                 
-                // Form
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text("Client ID")
-                                .fontWeight(.medium)
-                            
-                            Button(action: { showingHelp = true }) {
-                                Image(systemName: "questionmark.circle")
-                                    .foregroundColor(.secondary)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                        }
-                        
-                        TextField("Enter Reddit Client ID", text: $clientId)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .font(.system(.body, design: .monospaced))
-                    }
+                Text("Enter Reddit API credentials")
+                    .font(.system(size: 9))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color(NSColor.windowBackgroundColor))
+            
+            Rectangle()
+                .fill(Color(NSColor.separatorColor))
+                .frame(height: 0.5)
+                
+            // Compact form
+            VStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Client ID")
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(.secondary)
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Client Secret")
-                            .fontWeight(.medium)
-                        
-                        SecureField("Enter Reddit Client Secret", text: $clientSecret)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .font(.system(.body, design: .monospaced))
-                    }
-                    
-                    if !errorMessage.isEmpty {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .font(.caption)
-                    }
+                    TextField("Reddit Client ID", text: $clientId)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 10, design: .monospaced))
+                        .padding(6)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .cornerRadius(4)
                 }
-                .padding(.horizontal)
+                
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Client Secret")
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(.secondary)
+                    
+                    SecureField("Reddit Client Secret", text: $clientSecret)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 10, design: .monospaced))
+                        .padding(6)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .cornerRadius(4)
+                }
+                
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.system(size: 8))
+                        .padding(.top, 4)
+                }
                 
                 Spacer()
                 
-                // Action buttons
-                HStack(spacing: 12) {
+                // Compact action buttons
+                HStack(spacing: 8) {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .font(.system(size: 9))
                     .buttonStyle(.bordered)
                     
-                    Button("Save Credentials") {
+                    Button(isLoading ? "Validating..." : "Save") {
                         saveCredentials()
                     }
+                    .font(.system(size: 9))
                     .buttonStyle(.borderedProminent)
                     .disabled(clientId.isEmpty || clientSecret.isEmpty || isLoading)
                 }
-                .padding(.bottom)
             }
-            .frame(minWidth: 400, minHeight: 300)
-            .navigationTitle("Reddit Setup")
+            .padding(12)
+            .background(Color(NSColor.controlBackgroundColor))
         }
+        .frame(width: 520, height: 280)
         .sheet(isPresented: $showingHelp) {
             RedditSetupHelpView()
         }
