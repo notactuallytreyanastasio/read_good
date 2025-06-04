@@ -92,6 +92,9 @@ class StoryManager: ObservableObject {
         }
     }
     
+    @Published var showingTagSelection = false
+    @Published var tagSelectionStory: StoryData?
+    
     func handleStoryClick(_ story: StoryData, clickType: ClickType) {
         Task {
             // Track click in database
@@ -105,9 +108,9 @@ class StoryManager: ObservableObject {
             case .article:
                 await openStoryURLs(story: story, archiveURL: archiveURL)
                 
-                // Auto-generate tags
+                // Generate and apply tags automatically for now
                 if let url = story.url {
-                    await generateAndApplyTags(story: story, url: url)
+                    await generateAndApplyTagsDirectly(story: story, url: url)
                 }
                 
             case .comments:
@@ -117,6 +120,23 @@ class StoryManager: ObservableObject {
                 
             case .archive:
                 await openURL(archiveURL)
+            }
+        }
+    }
+    
+    func applyTagsToStory(_ story: StoryData, tags: [String]) async {
+        dataController.performBackgroundTask { context in
+            let managedStory = Story.findOrCreate(from: story, in: context)
+            
+            tags.forEach { tagName in
+                _ = Tag.findOrCreate(name: tagName, for: managedStory, in: context)
+            }
+            
+            do {
+                try context.save()
+                print("✅ Applied \(tags.count) tags to story: \(story.title)")
+            } catch {
+                print("❌ Failed to save tags: \(error)")
             }
         }
     }
@@ -185,26 +205,30 @@ class StoryManager: ObservableObject {
         }
     }
     
-    private func generateAndApplyTags(story: StoryData, url: String) async {
+    private func generateAndApplyTagsDirectly(story: StoryData, url: String) async {
         do {
-            let tags = try await claudeService.generateTags(title: story.title, url: url)
+            let result = try await claudeService.generateTags(title: story.title, url: url)
             
-            dataController.performBackgroundTask { context in
-                let managedStory = Story.findOrCreate(from: story, in: context)
-                
-                tags.forEach { tagName in
-                    _ = Tag.findOrCreate(name: tagName, for: managedStory, in: context)
+            if result.success && !result.tags.isEmpty {
+                dataController.performBackgroundTask { context in
+                    let managedStory = Story.findOrCreate(from: story, in: context)
+                    
+                    result.tags.forEach { tagName in
+                        _ = Tag.findOrCreate(name: tagName, for: managedStory, in: context)
+                    }
+                    
+                    do {
+                        try context.save()
+                        print("✅ Applied \(result.tags.count) AI tags via \(result.source ?? "unknown") to story: \(story.title)")
+                    } catch {
+                        print("❌ Failed to save tags: \(error)")
+                    }
                 }
-                
-                do {
-                    try context.save()
-                    print("Applied \(tags.count) AI tags to story: \(story.title)")
-                } catch {
-                    print("Failed to save tags: \(error)")
-                }
+            } else {
+                print("⚠️ Claude tag generation failed: \(result.error ?? "Unknown error")")
             }
         } catch {
-            print("Failed to generate tags: \(error)")
+            print("❌ Failed to generate tags: \(error)")
         }
     }
     
@@ -224,5 +248,69 @@ class StoryManager: ObservableObject {
     
     func searchStoriesByTags(_ tags: [String]) -> [Story] {
         return dataController.searchStoriesByTags(tags)
+    }
+    
+    @Published var searchResults: [StoryData] = []
+    @Published var isSearching = false
+    
+    func performSearch(query: String) {
+        guard !query.isEmpty else {
+            searchResults = []
+            return
+        }
+        
+        isSearching = true
+        
+        Task {
+            // Check if query contains tags (comma-separated)
+            if query.contains(",") {
+                let tags = query.components(separatedBy: ",")
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .filter { !$0.isEmpty }
+                
+                let coreDataStories = searchStoriesByTags(tags)
+                let storyData = coreDataStories.compactMap { story in
+                    StoryData(
+                        id: story.id,
+                        title: story.title,
+                        url: story.url,
+                        commentsURL: story.commentsURL,
+                        source: StorySource(rawValue: story.source) ?? .hackernews,
+                        points: Int(story.points),
+                        commentCount: Int(story.commentCount),
+                        authorName: nil, // Not stored in Core Data
+                        createdAt: story.firstSeenAt // Use firstSeenAt as proxy
+                    )
+                }
+                
+                await MainActor.run {
+                    self.searchResults = storyData
+                    self.isSearching = false
+                    print("🔍 Tag search for \(tags) found \(storyData.count) results")
+                }
+            } else {
+                // Regular title search
+                let coreDataStories = searchStories(query: query)
+                let storyData = coreDataStories.compactMap { story in
+                    StoryData(
+                        id: story.id,
+                        title: story.title,
+                        url: story.url,
+                        commentsURL: story.commentsURL,
+                        source: StorySource(rawValue: story.source) ?? .hackernews,
+                        points: Int(story.points),
+                        commentCount: Int(story.commentCount),
+                        authorName: nil, // Not stored in Core Data
+                        createdAt: story.firstSeenAt // Use firstSeenAt as proxy
+                    )
+                }
+                
+                await MainActor.run {
+                    self.searchResults = storyData
+                    self.isSearching = false
+                    print("🔍 Title search for '\(query)' found \(storyData.count) results")
+                }
+            }
+        }
     }
 }

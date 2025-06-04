@@ -3,17 +3,13 @@ import Foundation
 class ClaudeService: @unchecked Sendable {
     private let session = URLSession.shared
     
-    func generateTags(title: String, url: String) async throws -> [String] {
-        // Check if Claude CLI is available
-        guard await isClaudeAvailable() else {
-            throw ClaudeError.claudeNotAvailable
-        }
+    func generateTags(title: String, url: String?) async throws -> ClaudeTagResult {
+        print("🤖 Starting Claude tag generation for: \(title)")
         
         let prompt = """
-        Based on this article title and URL, suggest 4-6 relevant tags that would help categorize and find this content later.
+        Based on this article title\(url != nil ? " and URL" : ""), suggest 4-6 relevant tags that would help categorize and find this content later.
         
-        Title: "\(title)"
-        URL: \(url)
+        Title: "\(title)"\(url != nil ? "\nURL: \(url!)" : "")
         
         Please provide tags that are:
         - Descriptive and specific
@@ -25,14 +21,40 @@ class ClaudeService: @unchecked Sendable {
         Return only the tags as a comma-separated list, no explanations.
         """
         
-        do {
-            let tags = try await callClaudeCLI(prompt: prompt)
-            print("Generated \(tags.count) AI tags for: \(title)")
-            return tags
-        } catch {
-            print("Claude tag generation failed: \(error)")
-            throw error
+        // Try multiple methods like the original Electron version
+        
+        // Method 1: Try Claude CLI first
+        if await isClaudeAvailable() {
+            do {
+                print("💻 Trying Claude CLI...")
+                let tags = try await callClaudeCLI(prompt: prompt)
+                print("✅ Claude CLI succeeded with \(tags.count) tags")
+                return ClaudeTagResult(success: true, tags: tags, source: "claude-cli", error: nil)
+            } catch {
+                print("❌ Claude CLI failed: \(error)")
+            }
         }
+        
+        // Method 2: Try HTTP API on common ports
+        do {
+            print("🌐 Trying Claude HTTP API...")
+            let result = try await tryClaudeHttpAPI(prompt: prompt)
+            if result.success {
+                print("✅ HTTP API succeeded on \(result.source ?? "unknown")")
+                return result
+            }
+        } catch {
+            print("❌ Claude HTTP API failed: \(error)")
+        }
+        
+        // Method 3: Check if Claude Desktop app exists
+        if await isClaudeDesktopInstalled() {
+            print("📱 Claude Desktop app found, but AppleScript not implemented")
+            // TODO: Implement AppleScript method if needed
+        }
+        
+        print("❌ All Claude integration methods failed")
+        return ClaudeTagResult(success: false, tags: [], source: nil, error: "Claude integration failed - ensure Claude CLI is installed and accessible")
     }
     
     private func isClaudeAvailable() async -> Bool {
@@ -46,11 +68,70 @@ class ClaudeService: @unchecked Sendable {
             do {
                 try process.run()
                 process.waitUntilExit()
-                continuation.resume(returning: process.terminationStatus == 0)
+                let available = process.terminationStatus == 0
+                if available {
+                    print("✅ Claude CLI found in PATH")
+                } else {
+                    print("❌ Claude CLI not found in PATH")
+                }
+                continuation.resume(returning: available)
             } catch {
+                print("❌ Error checking Claude CLI: \(error)")
                 continuation.resume(returning: false)
             }
         }
+    }
+    
+    private func isClaudeDesktopInstalled() async -> Bool {
+        let possiblePaths = [
+            "/Applications/Claude.app",
+            "/System/Applications/Claude.app", 
+            "/Applications/Utilities/Claude.app"
+        ]
+        
+        for path in possiblePaths {
+            if FileManager.default.fileExists(atPath: path) {
+                print("✅ Found Claude Desktop at \(path)")
+                return true
+            }
+        }
+        
+        print("❌ Claude Desktop app not found")
+        return false
+    }
+    
+    private func tryClaudeHttpAPI(prompt: String) async throws -> ClaudeTagResult {
+        let ports = [3000, 8080, 9000, 52000, 52001]
+        
+        for port in ports {
+            do {
+                let url = URL(string: "http://localhost:\(port)/api/chat")!
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.setValue("ReadGood-TagGenerator/1.0", forHTTPHeaderField: "User-Agent")
+                request.timeoutInterval = 10.0
+                
+                let body: [String: Any] = [
+                    "message": prompt,
+                    "max_tokens": 100
+                ]
+                request.httpBody = try JSONSerialization.data(withJSONObject: body)
+                
+                let (data, _) = try await session.data(for: request)
+                
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let response = json["response"] as? String ?? json["message"] as? String {
+                    let tags = try parseClaudeResponse(response)
+                    return ClaudeTagResult(success: true, tags: tags, source: "claude-http-\(port)", error: nil)
+                }
+            } catch {
+                // Continue to next port
+                continue
+            }
+        }
+        
+        throw ClaudeError.invalidResponse("No working HTTP API found on any port")
     }
     
     private func callClaudeCLI(prompt: String) async throws -> [String] {
@@ -163,6 +244,13 @@ class ClaudeService: @unchecked Sendable {
         
         throw ClaudeError.invalidResponse("No valid tags found in Claude response")
     }
+}
+
+struct ClaudeTagResult {
+    let success: Bool
+    let tags: [String]
+    let source: String?
+    let error: String?
 }
 
 enum ClaudeError: Error, LocalizedError {

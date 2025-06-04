@@ -48,9 +48,23 @@ struct StoryMenuView: View {
                 }
                 
                 if showingSearch {
-                    TextField("Search stories or tags...", text: $searchText)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .font(.system(size: 12))
+                    VStack(spacing: 4) {
+                        TextField("Search stories or tags...", text: $searchText)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .font(.system(size: 12))
+                            .onSubmit {
+                                storyManager.performSearch(query: searchText)
+                            }
+                            .onChange(of: searchText) { newValue in
+                                if newValue.isEmpty {
+                                    storyManager.searchResults = []
+                                }
+                            }
+                        
+                        Text("Use commas to search by tags (e.g., 'swift, ios')")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 // Filter picker
@@ -127,32 +141,48 @@ struct StoryMenuView: View {
             .background(Color(NSColor.controlBackgroundColor))
         }
         .frame(width: 400, height: 600)
+        // TODO: Add TagSelectionView to Xcode project
+        /* 
+        .sheet(isPresented: $storyManager.showingTagSelection) {
+            if let story = storyManager.tagSelectionStory {
+                TagSelectionView(story: story)
+                    .environmentObject(storyManager)
+            }
+        }
+        */
     }
     
     private var filteredStories: [StoryData] {
-        let stories = storyManager.stories
-        print("📱 UI: Raw stories count: \(stories.count)")
-        
-        // Apply search filter
-        let searchFiltered = searchText.isEmpty ? stories : stories.filter { story in
-            story.title.localizedCaseInsensitiveContains(searchText)
+        // Use search results if available and search text is not empty
+        let baseStories: [StoryData]
+        if !searchText.isEmpty && !storyManager.searchResults.isEmpty {
+            baseStories = storyManager.searchResults
+            print("📱 UI: Using search results: \(baseStories.count)")
+        } else if !searchText.isEmpty {
+            // Fall back to live title filtering if no search results
+            baseStories = storyManager.stories.filter { story in
+                story.title.localizedCaseInsensitiveContains(searchText)
+            }
+            print("📱 UI: Using live title filter: \(baseStories.count)")
+        } else {
+            baseStories = storyManager.stories
+            print("📱 UI: Using all stories: \(baseStories.count)")
         }
-        print("📱 UI: After search filter: \(searchFiltered.count)")
         
-        // Apply type filter (would need Core Data integration for unread/gems/recent)
+        // Apply type filter
         let result: [StoryData]
         switch selectedFilter {
         case .all:
-            result = searchFiltered
+            result = baseStories
         case .unread:
             // Would filter by unread stories from Core Data
-            result = searchFiltered
+            result = baseStories
         case .gems:
-            // Would filter by low-appearance stories from Core Data
-            result = searchFiltered.filter { $0.points < 50 }
+            // Filter by low-appearance stories (hidden gems)
+            result = baseStories.filter { $0.points < 50 }
         case .recent:
             // Would filter by recently clicked stories from Core Data
-            result = searchFiltered
+            result = baseStories
         }
         
         print("📱 UI: Final filtered stories: \(result.count)")
