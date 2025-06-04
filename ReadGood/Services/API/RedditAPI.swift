@@ -74,13 +74,15 @@ class RedditAPI {
             return // Token still valid
         }
         
-        guard let clientId = ProcessInfo.processInfo.environment["REDDIT_CLIENT_ID"],
-              let clientSecret = ProcessInfo.processInfo.environment["REDDIT_CLIENT_SECRET"] else {
-            throw APIError.missingCredentials("Reddit API credentials not found in environment")
+        guard let credentials = CredentialManager.shared.getRedditCredentials() else {
+            throw APIError.missingCredentials("Reddit API credentials not configured. Please use 'ACTIVATE REDDIT' to set up credentials.")
         }
         
-        let credentials = "\(clientId):\(clientSecret)"
-        let credentialsData = credentials.data(using: .utf8)!
+        let clientId = credentials.clientId
+        let clientSecret = credentials.clientSecret
+        
+        let credentialString = "\(clientId):\(clientSecret)"
+        let credentialsData = credentialString.data(using: .utf8)!
         let base64Credentials = credentialsData.base64EncodedString()
         
         var request = URLRequest(url: URL(string: authURL)!)
