@@ -22,6 +22,7 @@
         <attribute name="timesAppeared" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="String"/>
+        <attribute name="viewCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="viewedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="clicks" toMany="YES" deletionRule="Cascade" destinationEntity="Click" inverseName="story" inverseEntity="Click"/>
         <relationship name="tags" toMany="YES" deletionRule="Cascade" destinationEntity="Tag" inverseName="story" inverseEntity="Tag"/>

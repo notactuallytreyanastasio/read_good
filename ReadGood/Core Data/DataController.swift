@@ -119,4 +119,141 @@ class DataController: ObservableObject {
             }
         }
     }
+    
+    // Get most common tags - async to avoid blocking main thread
+    func getTopTags(limit: Int = 5) async -> [(String, Int)] {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Tag> = Tag.fetchRequest()
+                
+                do {
+                    let allTags = try context.fetch(request)
+                    
+                    // Count occurrences of each tag name
+                    var tagCounts: [String: Int] = [:]
+                    for tag in allTags {
+                        tagCounts[tag.name, default: 0] += 1
+                    }
+                    
+                    // Sort by count and take top results
+                    let sortedTags = tagCounts.sorted { $0.value > $1.value }
+                        .prefix(limit)
+                        .map { ($0.key, $0.value) }
+                    
+                    continuation.resume(returning: Array(sortedTags))
+                } catch {
+                    print("Failed to fetch top tags: \(error.localizedDescription)")
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+    }
+    
+    // Debug method to get all tags with their counts
+    func getAllTagsWithCounts() async -> [(String, Int)] {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Tag> = Tag.fetchRequest()
+                
+                do {
+                    let allTags = try context.fetch(request)
+                    print("🏷️ DEBUG: Found \(allTags.count) total tag records in database")
+                    
+                    // Count occurrences of each tag name
+                    var tagCounts: [String: Int] = [:]
+                    for tag in allTags {
+                        tagCounts[tag.name, default: 0] += 1
+                        print("🏷️ DEBUG: Tag '\(tag.name)' for story: \(tag.story.title)")
+                    }
+                    
+                    print("🏷️ DEBUG: Unique tag counts: \(tagCounts)")
+                    
+                    // Sort by count
+                    let sortedTags = tagCounts.sorted { $0.value > $1.value }
+                        .map { ($0.key, $0.value) }
+                    
+                    continuation.resume(returning: Array(sortedTags))
+                } catch {
+                    print("Failed to fetch all tags: \(error.localizedDescription)")
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+    }
+    
+    // Get total story count for debugging
+    func getStoryCount() async -> Int {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Story> = Story.fetchRequest()
+                
+                do {
+                    let count = try context.count(for: request)
+                    print("🏷️ DEBUG: Found \(count) stories in database")
+                    continuation.resume(returning: count)
+                } catch {
+                    print("Failed to count stories: \(error.localizedDescription)")
+                    continuation.resume(returning: 0)
+                }
+            }
+        }
+    }
+    
+    // Get total click count for debugging
+    func getClickCount() async -> Int {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Click> = Click.fetchRequest()
+                
+                do {
+                    let count = try context.count(for: request)
+                    print("🏷️ DEBUG: Found \(count) clicks in database")
+                    continuation.resume(returning: count)
+                } catch {
+                    print("Failed to count clicks: \(error.localizedDescription)")
+                    continuation.resume(returning: 0)
+                }
+            }
+        }
+    }
+    
+    // Get all stories with their stats for debug view
+    func getAllStoriesWithStats() async -> [StoryStats] {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Story> = Story.fetchRequest()
+                request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.lastSeenAt, ascending: false)]
+                
+                do {
+                    let stories = try context.fetch(request)
+                    
+                    let storyStats = stories.map { story in
+                        // Get tags for this story
+                        let tags = Array(story.tags).map { $0.name }
+                        
+                        // Count clicks for this story
+                        let clickCount = story.clicks.count
+                        
+                        return StoryStats(
+                            id: story.id,
+                            title: story.title,
+                            url: story.url,
+                            source: story.source,
+                            points: story.points,
+                            viewCount: story.viewCount,
+                            clickCount: clickCount,
+                            tags: tags,
+                            firstSeenAt: story.firstSeenAt,
+                            lastSeenAt: story.lastSeenAt
+                        )
+                    }
+                    
+                    continuation.resume(returning: storyStats)
+                } catch {
+                    print("Failed to fetch stories with stats: \(error.localizedDescription)")
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+    }
 }

@@ -28,6 +28,8 @@ class StoryManager: ObservableObject {
     nonisolated func startPeriodicRefresh() {
         Task { @MainActor in
             setupPeriodicRefresh()
+            // Also load any existing tags on startup
+            loadTopTags()
         }
     }
     
@@ -56,7 +58,11 @@ class StoryManager: ObservableObject {
                     redditStories = try await redditAPI.fetchStories()
                     print("✅ Fetched \(redditStories.count) Reddit stories")
                 } catch {
-                    print("⚠️ Reddit fetch failed (expected if no credentials): \(error)")
+                    if case APIError.missingCredentials = error {
+                        print("⚠️ Reddit fetch skipped: No credentials configured. Use 'ACTIVATE REDDIT' to set up.")
+                    } else {
+                        print("⚠️ Reddit fetch failed: \(error)")
+                    }
                 }
                 
                 do {
@@ -77,6 +83,9 @@ class StoryManager: ObservableObject {
                 
                 // Save to Core Data in background
                 dataController.batchSaveStories(allStories)
+                
+                // Load top tags after saving stories
+                self.loadTopTags()
                 
             } catch {
                 print("❌ Failed to refresh stories: \(error)")
@@ -253,6 +262,10 @@ class StoryManager: ObservableObject {
     @Published var searchResults: [StoryData] = []
     @Published var isSearching = false
     
+    // Tag browser state
+    @Published var topTags: [(String, Int)] = []
+    @Published var selectedTag: String?
+    
     func performSearch(query: String) {
         guard !query.isEmpty else {
             searchResults = []
@@ -310,6 +323,74 @@ class StoryManager: ObservableObject {
                     self.isSearching = false
                     print("🔍 Title search for '\(query)' found \(storyData.count) results")
                 }
+            }
+        }
+    }
+    
+    // Tag browser methods
+    func loadTopTags() {
+        Task {
+            let tags = await dataController.getTopTags(limit: 5)
+            await MainActor.run {
+                self.topTags = tags
+                print("🏷️ Loaded \(tags.count) top tags: \(tags.map { $0.0 })")
+            }
+        }
+    }
+    
+    func selectTag(_ tagName: String?) {
+        selectedTag = tagName
+        if let tagName = tagName {
+            // Search for stories with this tag
+            performSearch(query: tagName)
+        } else {
+            // Clear tag filter
+            searchResults = []
+        }
+    }
+    
+    func trackStoryView(_ story: StoryData) {
+        Task {
+            dataController.performBackgroundTask { context in
+                let managedStory = Story.findOrCreate(from: story, in: context)
+                managedStory.viewCount += 1
+                
+                do {
+                    try context.save()
+                } catch {
+                    print("Failed to track story view: \(error)")
+                }
+            }
+        }
+    }
+    
+    // Debug methods
+    func debugQueryTags() {
+        Task {
+            print("🏷️ DEBUG: Starting comprehensive database query...")
+            let storyCount = await dataController.getStoryCount()
+            let clickCount = await dataController.getClickCount()
+            let allTags = await dataController.getAllTagsWithCounts()
+            
+            await MainActor.run {
+                print("🏷️ DEBUG: Database Summary:")
+                print("🏷️ DEBUG: - Stories: \(storyCount)")
+                print("🏷️ DEBUG: - Clicks: \(clickCount)")
+                print("🏷️ DEBUG: - Unique tags: \(allTags.count)")
+                print("🏷️ DEBUG: All tags: \(allTags)")
+            }
+        }
+    }
+    
+    @Published var showingTagWindow = false
+    @Published var allTagsData: [(String, Int)] = []
+    
+    func openTagWindow() {
+        Task {
+            let allTags = await dataController.getAllTagsWithCounts()
+            await MainActor.run {
+                self.allTagsData = allTags
+                self.showingTagWindow = true
             }
         }
     }

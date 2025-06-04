@@ -15,6 +15,7 @@ public class Story: NSManagedObject, Identifiable {
     @NSManaged public var lastSeenAt: Date
     @NSManaged public var timesAppeared: Int32
     @NSManaged public var isViewed: Bool
+    @NSManaged public var viewCount: Int32
     @NSManaged public var viewedAt: Date?
     @NSManaged public var isEngaged: Bool
     @NSManaged public var engagedAt: Date?
@@ -113,6 +114,7 @@ extension Story {
             story.lastSeenAt = Date()
             story.timesAppeared = 1
             story.isViewed = false
+            story.viewCount = 0
             story.isEngaged = false
             story.engagementCount = 0
             return story
@@ -147,4 +149,17 @@ extension Story {
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.firstSeenAt, ascending: false)]
         return request
     }
+}
+
+struct StoryStats {
+    let id: String
+    let title: String
+    let url: String?
+    let source: String
+    let points: Int32
+    let viewCount: Int32
+    let clickCount: Int
+    let tags: [String]
+    let firstSeenAt: Date
+    let lastSeenAt: Date
 }

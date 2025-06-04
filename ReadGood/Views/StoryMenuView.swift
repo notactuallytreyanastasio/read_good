@@ -2,9 +2,11 @@ import SwiftUI
 
 struct StoryMenuView: View {
     @EnvironmentObject var storyManager: StoryManager
+    @ObservedObject private var credentialManager = CredentialManager.shared
     @State private var searchText = ""
     @State private var selectedFilter: FilterType = .all
     @State private var showingSearch = false
+    @State private var showingRedditCredentials = false
     
     enum FilterType: String, CaseIterable {
         case all = "All Stories"
@@ -24,6 +26,90 @@ struct StoryMenuView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            // Tag browser at the top
+            VStack(spacing: 0) {
+                HStack(spacing: 4) {
+                    Text("Tags:")
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundColor(.secondary)
+                    
+                    if storyManager.topTags.isEmpty {
+                        Text("Loading...")
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+                    } else {
+                        ForEach(storyManager.topTags, id: \.0) { tag in
+                            Button(action: {
+                                if storyManager.selectedTag == tag.0 {
+                                    // Deselect if already selected
+                                    storyManager.selectTag(nil)
+                                } else {
+                                    storyManager.selectTag(tag.0)
+                                }
+                            }) {
+                                HStack(spacing: 2) {
+                                    Text(tag.0)
+                                        .font(.system(size: 8))
+                                        .lineLimit(1)
+                                    
+                                    Text("(\(tag.1))")
+                                        .font(.system(size: 7))
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.horizontal, 4)
+                                .padding(.vertical, 2)
+                                .background(
+                                    storyManager.selectedTag == tag.0 ? 
+                                    Color(NSColor.selectedControlColor) : 
+                                    Color(NSColor.controlBackgroundColor)
+                                )
+                                .cornerRadius(3)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .foregroundColor(
+                                storyManager.selectedTag == tag.0 ? 
+                                .primary : 
+                                .secondary
+                            )
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    // Debug button
+                    Button("Debug") {
+                        storyManager.debugQueryTags()
+                    }
+                    .font(.system(size: 8))
+                    .foregroundColor(.secondary)
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    // All tags button
+                    Button("All Tags") {
+                        storyManager.openTagWindow()
+                    }
+                    .font(.system(size: 8))
+                    .foregroundColor(.secondary)
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    if storyManager.selectedTag != nil {
+                        Button("Clear") {
+                            storyManager.selectTag(nil)
+                        }
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color(NSColor.windowBackgroundColor))
+                
+                Rectangle()
+                    .fill(Color(NSColor.separatorColor))
+                    .frame(height: 0.5)
+            }
+            
             // Compact header
             HStack(spacing: 8) {
                 Text("ReadGood")
@@ -46,6 +132,27 @@ struct StoryMenuView: View {
                 
                 Button(action: { showingSearch.toggle() }) {
                     Image(systemName: "magnifyingglass")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+                // Reddit activation button
+                Button(action: { showingRedditCredentials = true }) {
+                    HStack(spacing: 2) {
+                        Image(systemName: credentialManager.hasRedditCredentials ? "checkmark.circle.fill" : "globe")
+                            .font(.system(size: 9))
+                            .foregroundColor(credentialManager.hasRedditCredentials ? .green : .orange)
+                        
+                        Text(credentialManager.hasRedditCredentials ? "Reddit" : "ACTIVATE REDDIT")
+                            .font(.system(size: 8, weight: .medium))
+                            .foregroundColor(credentialManager.hasRedditCredentials ? .primary : .orange)
+                    }
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+                Button(action: { storyManager.debugQueryTags() }) {
+                    Image(systemName: "chart.bar")
                         .font(.system(size: 10))
                         .foregroundColor(.secondary)
                 }
@@ -117,6 +224,9 @@ struct StoryMenuView: View {
                     } else {
                         ForEach(filteredStories) { story in
                             CompactStoryRowView(story: story)
+                                .onAppear {
+                                    storyManager.trackStoryView(story)
+                                }
                                 .onTapGesture {
                                     storyManager.handleStoryClick(story, clickType: .article)
                                 }
@@ -152,6 +262,12 @@ struct StoryMenuView: View {
             .background(Color(NSColor.windowBackgroundColor))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $storyManager.showingTagWindow) {
+            AllTagsView(tags: storyManager.allTagsData)
+        }
+        .sheet(isPresented: $showingRedditCredentials) {
+            RedditCredentialsView()
+        }
         // TODO: Add TagSelectionView to Xcode project
         /* 
         .sheet(isPresented: $storyManager.showingTagSelection) {
@@ -164,9 +280,12 @@ struct StoryMenuView: View {
     }
     
     private var filteredStories: [StoryData] {
-        // Use search results if available and search text is not empty
+        // Use search results if available (includes tag filtering)
         let baseStories: [StoryData]
-        if !searchText.isEmpty && !storyManager.searchResults.isEmpty {
+        if storyManager.selectedTag != nil && !storyManager.searchResults.isEmpty {
+            baseStories = storyManager.searchResults
+            print("📱 UI: Using tag filtered results: \(baseStories.count)")
+        } else if !searchText.isEmpty && !storyManager.searchResults.isEmpty {
             baseStories = storyManager.searchResults
             print("📱 UI: Using search results: \(baseStories.count)")
         } else if !searchText.isEmpty {
@@ -275,6 +394,48 @@ struct LoadingView: View {
                 .foregroundColor(.secondary)
         }
         .padding(.vertical, 8)
+    }
+}
+
+struct AllTagsView: View {
+    let tags: [(String, Int)]
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                if tags.isEmpty {
+                    Text("No tags found in database")
+                        .foregroundColor(.secondary)
+                        .padding()
+                } else {
+                    Text("\(tags.count) unique tags found")
+                        .font(.headline)
+                        .padding()
+                    
+                    List {
+                        ForEach(Array(tags.enumerated()), id: \.offset) { index, tag in
+                            HStack {
+                                Text("\(index + 1).")
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 30, alignment: .trailing)
+                                
+                                Text(tag.0)
+                                    .font(.system(.body, design: .monospaced))
+                                
+                                Spacer()
+                                
+                                Text("\(tag.1)")
+                                    .foregroundColor(.secondary)
+                                    .font(.system(.caption, design: .monospaced))
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("All Tags")
+            .frame(minWidth: 400, minHeight: 500)
+        }
     }
 }
 
