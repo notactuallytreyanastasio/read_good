@@ -256,4 +256,61 @@ class DataController: ObservableObject {
             }
         }
     }
+    
+    // Cache management methods
+    func shouldRefreshSource(_ source: String, cacheMinutes: Int = 30) async -> Bool {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let shouldRefresh = LinkWrite.shouldRefresh(source: source, cacheMinutes: cacheMinutes, in: context)
+                continuation.resume(returning: shouldRefresh)
+            }
+        }
+    }
+    
+    func recordSourceFetch(_ source: String) {
+        performBackgroundTask { context in
+            _ = LinkWrite.create(source: source, in: context)
+            
+            do {
+                try context.save()
+                print("📝 Recorded fetch for source: \(source)")
+            } catch {
+                print("Failed to record source fetch: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func getCachedStories(for source: StorySource) async -> [StoryData] {
+        return await withCheckedContinuation { continuation in
+            performBackgroundTask { context in
+                let request: NSFetchRequest<Story> = Story.fetchRequest()
+                request.predicate = NSPredicate(format: "source == %@", source.rawValue)
+                request.sortDescriptors = [NSSortDescriptor(keyPath: \Story.lastSeenAt, ascending: false)]
+                request.fetchLimit = 15 // Match API limits
+                
+                do {
+                    let stories = try context.fetch(request)
+                    let storyData = stories.map { story in
+                        StoryData(
+                            id: story.id,
+                            title: story.title,
+                            url: story.url,
+                            commentsURL: story.commentsURL,
+                            source: source,
+                            points: Int(story.points),
+                            commentCount: Int(story.commentCount),
+                            authorName: nil, // Not stored in Core Data
+                            createdAt: story.firstSeenAt
+                        )
+                    }
+                    
+                    print("📚 Retrieved \(storyData.count) cached stories for \(source.displayName)")
+                    continuation.resume(returning: storyData)
+                } catch {
+                    print("Failed to fetch cached stories for \(source.displayName): \(error.localizedDescription)")
+                    continuation.resume(returning: [])
+                }
+            }
+        }
+    }
 }

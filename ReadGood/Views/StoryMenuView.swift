@@ -4,25 +4,10 @@ struct StoryMenuView: View {
     @EnvironmentObject var storyManager: StoryManager
     @ObservedObject private var credentialManager = CredentialManager.shared
     @State private var searchText = ""
-    @State private var selectedFilter: FilterType = .all
     @State private var showingSearch = false
     @State private var showingRedditCredentials = false
-    
-    enum FilterType: String, CaseIterable {
-        case all = "All Stories"
-        case unread = "Unread"
-        case gems = "Hidden Gems"
-        case recent = "Recent"
-        
-        var icon: String {
-            switch self {
-            case .all: return "list.bullet"
-            case .unread: return "circle"
-            case .gems: return "diamond"
-            case .recent: return "clock"
-            }
-        }
-    }
+    @State private var showingTagRecommendations = false
+    @State private var tagRecommendationStory: StoryData?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -190,47 +175,71 @@ struct StoryMenuView: View {
                 .background(Color(NSColor.windowBackgroundColor))
             }
             
-            // Compact filter tabs
-            HStack(spacing: 0) {
-                ForEach(FilterType.allCases, id: \.self) { filter in
-                    Button(action: { selectedFilter = filter }) {
-                        Text(filter.rawValue)
-                            .font(.system(size: 9))
-                            .foregroundColor(selectedFilter == filter ? .primary : .secondary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(selectedFilter == filter ? Color(NSColor.selectedControlColor) : Color.clear)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                Spacer()
-            }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(Color(NSColor.windowBackgroundColor))
-            
-            Rectangle()
-                .fill(Color(NSColor.separatorColor))
-                .frame(height: 0.5)
-            
-            // Compact stories list
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    if filteredStories.isEmpty && !storyManager.isLoading {
-                        Text("No stories")
-                            .font(.system(size: 10))
-                            .foregroundColor(.secondary)
-                            .padding()
-                    } else {
-                        ForEach(filteredStories) { story in
-                            CompactStoryRowView(story: story)
-                                .onAppear {
-                                    storyManager.trackStoryView(story)
-                                }
-                                .onTapGesture {
-                                    storyManager.handleStoryClick(story, clickType: .article)
-                                }
+            // Story columns by source
+            HStack(alignment: .top, spacing: 0) {
+                ForEach(StorySource.allCases, id: \.self) { source in
+                    let sourceStories = Array(filteredStories.filter { 
+                        $0.source == source
+                    }.prefix(15))
+                    
+                    VStack(spacing: 0) {
+                        // Column header
+                        HStack(spacing: 4) {
+                            Text(source.emoji)
+                                .font(.system(size: 8))
+                            Text(source.displayName)
+                                .font(.system(size: 8, weight: .medium))
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Text("\(sourceStories.count)")
+                                .font(.system(size: 7))
+                                .foregroundColor(.secondary)
                         }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        
+                        Rectangle()
+                            .fill(Color(NSColor.separatorColor))
+                            .frame(height: 0.5)
+                        
+                        // Stories for this source
+                        ScrollView {
+                            LazyVStack(spacing: 0) {
+                                if sourceStories.isEmpty && !storyManager.isLoading {
+                                    Text("No \(source.displayName.lowercased()) stories")
+                                        .font(.system(size: 8))
+                                        .foregroundColor(.secondary)
+                                        .padding(8)
+                                } else {
+                                    ForEach(sourceStories) { story in
+                                        CompactStoryRowView(
+                                            story: story,
+                                            onTagRecommendation: { selectedStory in
+                                                print("🏷️ Right-click tag recommendation triggered for: \(selectedStory.title)")
+                                                tagRecommendationStory = selectedStory
+                                                showingTagRecommendations = true
+                                                print("🏷️ Set tagRecommendationStory and showingTagRecommendations = true")
+                                            }
+                                        )
+                                        .onAppear {
+                                            storyManager.trackStoryView(story)
+                                        }
+                                        .onTapGesture {
+                                            storyManager.handleStoryClick(story, clickType: .article)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .frame(minWidth: 200, maxWidth: .infinity)
+                    .background(Color(NSColor.windowBackgroundColor))
+                    
+                    if source != StorySource.allCases.last {
+                        Rectangle()
+                            .fill(Color(NSColor.separatorColor))
+                            .frame(width: 0.5)
                     }
                 }
             }
@@ -268,6 +277,22 @@ struct StoryMenuView: View {
         .sheet(isPresented: $showingRedditCredentials) {
             RedditCredentialsView()
         }
+        .sheet(item: Binding<StoryData?>(
+            get: { showingTagRecommendations ? tagRecommendationStory : nil },
+            set: { newValue in 
+                if newValue == nil {
+                    showingTagRecommendations = false
+                    tagRecommendationStory = nil
+                }
+            }
+        )) { story in
+            NavigationView {
+                TagRecommendationView(story: story)
+                    .environmentObject(storyManager)
+                    .navigationTitle("Tag Recommendations")
+            }
+            .frame(minWidth: 800, minHeight: 800)
+        }
         // TODO: Add TagSelectionView to Xcode project
         /* 
         .sheet(isPresented: $storyManager.showingTagSelection) {
@@ -281,47 +306,29 @@ struct StoryMenuView: View {
     
     private var filteredStories: [StoryData] {
         // Use search results if available (includes tag filtering)
-        let baseStories: [StoryData]
         if storyManager.selectedTag != nil && !storyManager.searchResults.isEmpty {
-            baseStories = storyManager.searchResults
-            print("📱 UI: Using tag filtered results: \(baseStories.count)")
+            print("📱 UI: Using tag filtered results: \(storyManager.searchResults.count)")
+            return storyManager.searchResults
         } else if !searchText.isEmpty && !storyManager.searchResults.isEmpty {
-            baseStories = storyManager.searchResults
-            print("📱 UI: Using search results: \(baseStories.count)")
+            print("📱 UI: Using search results: \(storyManager.searchResults.count)")
+            return storyManager.searchResults
         } else if !searchText.isEmpty {
             // Fall back to live title filtering if no search results
-            baseStories = storyManager.stories.filter { story in
+            let filtered = storyManager.stories.filter { story in
                 story.title.localizedCaseInsensitiveContains(searchText)
             }
-            print("📱 UI: Using live title filter: \(baseStories.count)")
+            print("📱 UI: Using live title filter: \(filtered.count)")
+            return filtered
         } else {
-            baseStories = storyManager.stories
-            print("📱 UI: Using all stories: \(baseStories.count)")
+            print("📱 UI: Using all stories: \(storyManager.stories.count)")
+            return storyManager.stories
         }
-        
-        // Apply type filter
-        let result: [StoryData]
-        switch selectedFilter {
-        case .all:
-            result = baseStories
-        case .unread:
-            // Would filter by unread stories from Core Data
-            result = baseStories
-        case .gems:
-            // Filter by low-appearance stories (hidden gems)
-            result = baseStories.filter { $0.points < 50 }
-        case .recent:
-            // Would filter by recently clicked stories from Core Data
-            result = baseStories
-        }
-        
-        print("📱 UI: Final filtered stories: \(result.count)")
-        return result
     }
 }
 
 struct CompactStoryRowView: View {
     let story: StoryData
+    let onTagRecommendation: (StoryData) -> Void
     @State private var isHovering = false
     
     var body: some View {
@@ -362,6 +369,11 @@ struct CompactStoryRowView: View {
         .padding(.vertical, 3)
         .background(isHovering ? Color(NSColor.selectedControlColor).opacity(0.1) : Color.clear)
         .contentShape(Rectangle())
+        .contextMenu {
+            Button("Get Tag Recommendations") {
+                onTagRecommendation(story)
+            }
+        }
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.1)) {
                 isHovering = hovering
@@ -380,7 +392,9 @@ struct StoryRowView: View {
     let story: StoryData
     
     var body: some View {
-        CompactStoryRowView(story: story)
+        CompactStoryRowView(story: story) { _ in
+            // No-op for legacy compatibility
+        }
     }
 }
 

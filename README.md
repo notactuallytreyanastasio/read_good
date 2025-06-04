@@ -9,9 +9,9 @@ A native macOS rewrite of BOBrowser, providing a clean menu bar interface for ag
 ## Features
 
 ### 📰 Multi-Source Aggregation
-- **Hacker News**: Top stories via Firebase API
-- **Reddit**: Configurable subreddits via OAuth API  
-- **Pinboard**: Popular bookmarks via web scraping
+- **Hacker News**: Top stories via Firebase API (cached for 30 minutes)
+- **Reddit**: Configurable subreddits via OAuth API (always fresh)
+- **Pinboard**: Popular bookmarks via web scraping (cached for 30 minutes)
 
 ### 🎯 One-Click Reading
 Single click on any story automatically:
@@ -27,6 +27,7 @@ Single click on any story automatically:
 
 ### 📊 Comprehensive Tracking
 - **Core Data** database tracks all interactions
+- **Smart Caching**: link_writes table tracks API fetch times
 - Monitors story appearances vs actual clicks
 - Tracks reading patterns and engagement metrics
 - Archives URLs for offline access
@@ -136,7 +137,8 @@ Or configure via the Settings window after first launch.
 - `StoryManager.swift` - Central coordinator for story fetching and user interactions
 
 #### 🗄️ Data Layer
-- **Core Data Models**: `Story`, `Tag`, `Click` entities
+- **Core Data Models**: `Story`, `Tag`, `Click`, `LinkWrite` entities
+- **Smart Caching**: `LinkWrite` tracks API fetch times for 30-minute cache
 - **DataController**: Core Data stack management and operations
 - **API Services**: Separate clients for HN, Reddit, and Pinboard
 
@@ -158,10 +160,28 @@ Or configure via the Settings window after first launch.
 3. Note your Client ID and Secret
 4. Configure in Settings or set environment variables
 
+#### Configuring Subreddits
+To modify which subreddits are monitored, edit the `defaultSubreddits` array in:
+`ReadGood/Services/API/RedditAPI.swift:13-16`
+
+Default subreddits: `news`, `television`, `elixir`, `aitah`, `bestofredditorupdates`, `explainlikeimfive`
+
 ### Claude Integration
 1. Install Claude CLI from [claude.ai/download](https://claude.ai/download)
 2. Ensure `claude` command is available in PATH
 3. ReadGood will automatically detect and use Claude for tagging
+
+### Caching Behavior
+ReadGood implements smart caching to reduce API load and improve performance:
+
+- **Hacker News & Pinboard**: Stories cached for 30 minutes
+  - Fresh API calls only when cache expires
+  - Stored in Core Data with `LinkWrite` tracking table
+- **Reddit**: Always fetches fresh content (no caching)
+  - Provides randomized content selection
+  - Respects API rate limits with OAuth authentication
+
+The `LinkWrite` entity tracks when each source was last fetched, enabling efficient cache management.
 
 ## Usage
 
@@ -174,6 +194,7 @@ Or configure via the Settings window after first launch.
 ### Menu Bar App
 - Lives in your menu bar, no dock icon
 - Stories refresh automatically every 5 minutes
+- Smart caching reduces API load (HN/Pinboard cached 30min, Reddit always fresh)
 - Unobtrusive notification system for new interesting stories
 
 ## Migration from Electron Version

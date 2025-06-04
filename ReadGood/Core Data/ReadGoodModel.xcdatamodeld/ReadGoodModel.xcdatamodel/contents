@@ -38,4 +38,9 @@
         <attribute name="name" attributeType="String"/>
         <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="tags" inverseEntity="Story"/>
     </entity>
+    <entity name="LinkWrite" representedClassName="LinkWrite" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="source" attributeType="String"/>
+        <attribute name="time" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
 </model>

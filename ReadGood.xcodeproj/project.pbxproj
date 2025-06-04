@@ -24,6 +24,7 @@
 		742648562DF0CBEE00663A5C /* RedditCredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742648532DF0CBEE00663A5C /* RedditCredentialsView.swift */; };
 		742648572DF0CBEE00663A5C /* TagSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742648542DF0CBEE00663A5C /* TagSelectionView.swift */; };
 		742648582DF0CBEE00663A5C /* CredentialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 742648512DF0CBEE00663A5C /* CredentialManager.swift */; };
+		7426485B2DF0DB2200663A5C /* TagRecommendationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426485A2DF0DB2200663A5C /* TagRecommendationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		742648512DF0CBEE00663A5C /* CredentialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialManager.swift; sourceTree = "<group>"; };
 		742648532DF0CBEE00663A5C /* RedditCredentialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditCredentialsView.swift; sourceTree = "<group>"; };
 		742648542DF0CBEE00663A5C /* TagSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSelectionView.swift; sourceTree = "<group>"; };
+		7426485A2DF0DB2200663A5C /* TagRecommendationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRecommendationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				04A1F1AC2C8E4A9B00123456 /* SettingsView.swift */,
 				742648532DF0CBEE00663A5C /* RedditCredentialsView.swift */,
 				742648542DF0CBEE00663A5C /* TagSelectionView.swift */,
+				7426485A2DF0DB2200663A5C /* TagRecommendationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				04A1F1AD2C8E4A9B00123456 /* SettingsView.swift in Sources */,
 				04A1F1AF2C8E4A9B00123456 /* Story.swift in Sources */,
 				04A1F1B12C8E4A9B00123456 /* Tag.swift in Sources */,
+				7426485B2DF0DB2200663A5C /* TagRecommendationView.swift in Sources */,
 				04A1F1B32C8E4A9B00123456 /* DataController.swift in Sources */,
 				742648562DF0CBEE00663A5C /* RedditCredentialsView.swift in Sources */,
 				742648572DF0CBEE00663A5C /* TagSelectionView.swift in Sources */,

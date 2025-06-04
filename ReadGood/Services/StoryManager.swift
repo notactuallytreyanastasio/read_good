@@ -44,32 +44,53 @@ class StoryManager: ObservableObject {
         
         Task {
             do {
-                print("📡 Fetching stories from all sources...")
+                print("📡 Fetching stories with caching logic...")
                 
-                // Start with just Hacker News for testing
-                let hnStories = try await hackernewsAPI.fetchTopStories()
-                print("✅ Fetched \(hnStories.count) HN stories")
+                // Check cache status for each source
+                let hnShouldRefresh = await dataController.shouldRefreshSource("hackernews", cacheMinutes: 30)
+                let pinboardShouldRefresh = await dataController.shouldRefreshSource("pinboard", cacheMinutes: 30)
+                // Reddit always refreshes (no caching)
                 
-                // Try other sources but don't fail if they error
+                print("📊 Cache status - HN: \(hnShouldRefresh ? "refresh" : "cached"), Pinboard: \(pinboardShouldRefresh ? "refresh" : "cached"), Reddit: always refresh")
+                
+                // Fetch or load cached stories
+                let hnStories: [StoryData]
+                if hnShouldRefresh {
+                    hnStories = try await hackernewsAPI.fetchTopStories()
+                    print("✅ Fetched \(hnStories.count) fresh HN stories")
+                    dataController.recordSourceFetch("hackernews")
+                } else {
+                    hnStories = await dataController.getCachedStories(for: .hackernews)
+                    print("📚 Loaded \(hnStories.count) cached HN stories")
+                }
+                
+                let pinboardStories: [StoryData]
+                do {
+                    if pinboardShouldRefresh {
+                        pinboardStories = try await pinboardAPI.fetchPopularStories()
+                        print("✅ Fetched \(pinboardStories.count) fresh Pinboard stories")
+                        dataController.recordSourceFetch("pinboard")
+                    } else {
+                        pinboardStories = await dataController.getCachedStories(for: .pinboard)
+                        print("📚 Loaded \(pinboardStories.count) cached Pinboard stories")
+                    }
+                } catch {
+                    print("⚠️ Pinboard fetch failed, using cached: \(error)")
+                    pinboardStories = await dataController.getCachedStories(for: .pinboard)
+                }
+                
+                // Reddit always fetches fresh (no caching)
                 var redditStories: [StoryData] = []
-                var pinboardStories: [StoryData] = []
-                
                 do {
                     redditStories = try await redditAPI.fetchStories()
-                    print("✅ Fetched \(redditStories.count) Reddit stories")
+                    print("✅ Fetched \(redditStories.count) fresh Reddit stories")
+                    dataController.recordSourceFetch("reddit")
                 } catch {
                     if case APIError.missingCredentials = error {
                         print("⚠️ Reddit fetch skipped: No credentials configured. Use 'ACTIVATE REDDIT' to set up.")
                     } else {
                         print("⚠️ Reddit fetch failed: \(error)")
                     }
-                }
-                
-                do {
-                    pinboardStories = try await pinboardAPI.fetchPopularStories()
-                    print("✅ Fetched \(pinboardStories.count) Pinboard stories")
-                } catch {
-                    print("⚠️ Pinboard fetch failed: \(error)")
                 }
                 
                 let allStories = hnStories + redditStories + pinboardStories
@@ -81,8 +102,10 @@ class StoryManager: ObservableObject {
                     print("🎉 Updated UI with \(allStories.count) total stories")
                 }
                 
-                // Save to Core Data in background
-                dataController.batchSaveStories(allStories)
+                // Save to Core Data in background (only if we fetched fresh data)
+                if hnShouldRefresh || pinboardShouldRefresh || !redditStories.isEmpty {
+                    dataController.batchSaveStories(allStories)
+                }
                 
                 // Load top tags after saving stories
                 self.loadTopTags()

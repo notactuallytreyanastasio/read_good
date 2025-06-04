@@ -41,13 +41,10 @@ class StatusBarController: ObservableObject {
     }
     
     private func setupPopover() {
-        // Calculate optimal height - leave space for menu bar and dock
-        let screenHeight = NSScreen.main?.frame.height ?? 1000
-        let menuBarHeight: CGFloat = 25 // Approximate menu bar height
-        let dockHeight: CGFloat = 80 // Approximate dock height + margin
-        let maxHeight = screenHeight - menuBarHeight - dockHeight
+        // Fixed height for content-based sizing
+        let contentHeight: CGFloat = 600 // Enough for ~15 stories + headers/controls
         
-        popover.contentSize = NSSize(width: 360, height: maxHeight)
+        popover.contentSize = NSSize(width: 720, height: contentHeight)
         popover.behavior = .transient
         popover.contentViewController = NSHostingController(
             rootView: StoryMenuView()
