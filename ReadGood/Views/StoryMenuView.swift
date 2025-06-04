@@ -24,88 +24,99 @@ struct StoryMenuView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            VStack(spacing: 8) {
-                HStack {
-                    Text("ReadGood")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                    
-                    Spacer()
-                    
+            // Compact header
+            HStack(spacing: 8) {
+                Text("ReadGood")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.primary)
+                
+                Spacer()
+                
+                if storyManager.isLoading {
+                    ProgressView()
+                        .scaleEffect(0.6)
+                } else {
                     Button(action: { storyManager.refreshAllStories() }) {
                         Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 14))
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .disabled(storyManager.isLoading)
-                    
-                    Button(action: { showingSearch.toggle() }) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 14))
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                
-                if showingSearch {
-                    VStack(spacing: 4) {
-                        TextField("Search stories or tags...", text: $searchText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .font(.system(size: 12))
-                            .onSubmit {
-                                storyManager.performSearch(query: searchText)
-                            }
-                            .onChange(of: searchText) { newValue in
-                                if newValue.isEmpty {
-                                    storyManager.searchResults = []
-                                }
-                            }
-                        
-                        Text("Use commas to search by tags (e.g., 'swift, ios')")
-                            .font(.caption2)
+                            .font(.system(size: 10))
                             .foregroundColor(.secondary)
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 
-                // Filter picker
-                Picker("Filter", selection: $selectedFilter) {
-                    ForEach(FilterType.allCases, id: \.self) { filter in
-                        Label(filter.rawValue, systemImage: filter.icon)
-                            .tag(filter)
-                    }
+                Button(action: { showingSearch.toggle() }) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .font(.system(size: 10))
+                .buttonStyle(PlainButtonStyle())
             }
-            .padding()
-            .background(Color(NSColor.controlBackgroundColor))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .background(Color(NSColor.windowBackgroundColor))
             
-            Divider()
+            // Compact search (if shown)
+            if showingSearch {
+                VStack(spacing: 2) {
+                    TextField("Search stories or tags...", text: $searchText)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .font(.system(size: 10))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
+                        .background(Color(NSColor.controlBackgroundColor))
+                        .cornerRadius(3)
+                        .onSubmit {
+                            storyManager.performSearch(query: searchText)
+                        }
+                        .onChange(of: searchText) { newValue in
+                            if newValue.isEmpty {
+                                storyManager.searchResults = []
+                            }
+                        }
+                    
+                    Text("Comma-separated tags: swift, ios")
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 8)
+                .padding(.bottom, 4)
+                .background(Color(NSColor.windowBackgroundColor))
+            }
             
-            // Stories list
+            // Compact filter tabs
+            HStack(spacing: 0) {
+                ForEach(FilterType.allCases, id: \.self) { filter in
+                    Button(action: { selectedFilter = filter }) {
+                        Text(filter.rawValue)
+                            .font(.system(size: 9))
+                            .foregroundColor(selectedFilter == filter ? .primary : .secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(selectedFilter == filter ? Color(NSColor.selectedControlColor) : Color.clear)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 2)
+            .background(Color(NSColor.windowBackgroundColor))
+            
+            Rectangle()
+                .fill(Color(NSColor.separatorColor))
+                .frame(height: 0.5)
+            
+            // Compact stories list
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    if storyManager.isLoading {
-                        LoadingView()
-                    } else if filteredStories.isEmpty {
-                        VStack(spacing: 8) {
-                            Text("No stories available")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            
-                            Text("Total stories: \(storyManager.stories.count)")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            
-                            Button("Refresh") {
-                                storyManager.refreshAllStories()
-                            }
-                            .font(.caption)
-                        }
-                        .padding()
+                    if filteredStories.isEmpty && !storyManager.isLoading {
+                        Text("No stories")
+                            .font(.system(size: 10))
+                            .foregroundColor(.secondary)
+                            .padding()
                     } else {
                         ForEach(filteredStories) { story in
-                            StoryRowView(story: story)
+                            CompactStoryRowView(story: story)
                                 .onTapGesture {
                                     storyManager.handleStoryClick(story, clickType: .article)
                                 }
@@ -113,34 +124,34 @@ struct StoryMenuView: View {
                     }
                 }
             }
+            .background(Color(NSColor.controlBackgroundColor))
             
-            Divider()
+            // Minimal footer
+            Rectangle()
+                .fill(Color(NSColor.separatorColor))
+                .frame(height: 0.5)
             
-            // Footer
             HStack {
                 if let lastRefresh = storyManager.lastRefresh {
                     Text("Updated \(lastRefresh, style: .relative) ago")
-                        .font(.caption2)
+                        .font(.system(size: 8))
                         .foregroundColor(.secondary)
                 }
                 
                 Spacer()
                 
-                Button("Settings") {
-                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                }
-                .font(.caption)
-                
                 Button("Quit") {
                     NSApplication.shared.terminate(nil)
                 }
-                .font(.caption)
+                .font(.system(size: 8))
+                .foregroundColor(.secondary)
+                .buttonStyle(PlainButtonStyle())
             }
-            .padding(.horizontal)
-            .padding(.bottom, 8)
-            .background(Color(NSColor.controlBackgroundColor))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(Color(NSColor.windowBackgroundColor))
         }
-        .frame(width: 400, height: 600)
+        .frame(width: 320, height: 500)
         // TODO: Add TagSelectionView to Xcode project
         /* 
         .sheet(isPresented: $storyManager.showingTagSelection) {
@@ -190,54 +201,53 @@ struct StoryMenuView: View {
     }
 }
 
-struct StoryRowView: View {
+struct CompactStoryRowView: View {
     let story: StoryData
+    @State private var isHovering = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 8) {
-                Text(story.source.emoji)
-                    .font(.system(size: 14))
-                
-                Text(story.title)
-                    .font(.system(size: 11))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                
-                Spacer()
-            }
+        HStack(spacing: 6) {
+            // Source indicator
+            Text(story.source.emoji)
+                .font(.system(size: 10))
             
-            HStack {
-                HStack(spacing: 4) {
-                    Image(systemName: "arrow.up")
-                        .font(.system(size: 8))
-                    Text("\(story.points)")
-                        .font(.system(size: 9))
-                }
-                .foregroundColor(.orange)
+            // Title and metadata in single line when possible
+            VStack(alignment: .leading, spacing: 1) {
+                Text(story.title)
+                    .font(.system(size: 10))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .foregroundColor(.primary)
                 
-                HStack(spacing: 4) {
-                    Image(systemName: "bubble.left")
-                        .font(.system(size: 8))
-                    Text("\(story.commentCount)")
-                        .font(.system(size: 9))
-                }
-                .foregroundColor(.blue)
-                
-                Spacer()
-                
-                if let author = story.authorName {
-                    Text("by \(author)")
+                HStack(spacing: 8) {
+                    Text("\(story.points)↑")
                         .font(.system(size: 8))
                         .foregroundColor(.secondary)
+                    
+                    Text("\(story.commentCount)💬")
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                    
+                    if let author = story.authorName {
+                        Text(author)
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                    
+                    Spacer()
                 }
             }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 3)
+        .background(isHovering ? Color(NSColor.selectedControlColor).opacity(0.1) : Color.clear)
         .contentShape(Rectangle())
-        .onHover { isHovering in
-            if isHovering {
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isHovering = hovering
+            }
+            if hovering {
                 NSCursor.pointingHand.push()
             } else {
                 NSCursor.pop()
@@ -246,18 +256,25 @@ struct StoryRowView: View {
     }
 }
 
+// Keep the old one for now but rename it
+struct StoryRowView: View {
+    let story: StoryData
+    
+    var body: some View {
+        CompactStoryRowView(story: story)
+    }
+}
+
 struct LoadingView: View {
     var body: some View {
-        VStack {
+        HStack(spacing: 4) {
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
-                .scaleEffect(0.8)
-            
-            Text("Loading stories...")
-                .font(.caption)
+                .scaleEffect(0.5)
+            Text("Loading...")
+                .font(.system(size: 9))
                 .foregroundColor(.secondary)
         }
-        .padding()
+        .padding(.vertical, 8)
     }
 }
 
