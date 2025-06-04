@@ -1,6 +1,8 @@
 # ReadGood - Native macOS News Aggregator
 
 A native macOS rewrite of BOBrowser, providing a clean menu bar interface for aggregating and reading stories from Hacker News, Reddit, and Pinboard.
+
+
 ![Screenshot 2025-06-04 at 3 02 17 PM](https://github.com/user-attachments/assets/61ef931c-3689-4d05-9e0b-daece3741b26)
 
 > **Status**: ✅ **First working build complete!** The app now compiles and runs successfully as a native macOS menu bar application.
